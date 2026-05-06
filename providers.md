@@ -19,12 +19,14 @@ This project is intentionally provider-neutral, but it is not provider-agnostic 
 | Provider type | Typical base URL | Typical auth mode | Third-party flag | High-res model handling |
 | --- | --- | --- | --- | --- |
 | Official Google Gemini | `https://generativelanguage.googleapis.com` | `google` | not needed | optional `NANOBANANA_HIGHRES_MODEL` |
+| OpenAI Image API | `https://api.openai.com/v1` | `bearer` | not needed | optional `OPENAI_IMAGE_HIGHRES_MODEL` |
 | Gemini-compatible relay | provider-specific | usually `bearer` | usually required | provider-specific model name |
 | Custom internal endpoint | internal endpoint | provider-specific | usually required | provider-specific model name |
 
 | Provider 类型 | 常见 base URL | 常见认证方式 | 是否需要第三方标记 | 高分模型处理 |
 | --- | --- | --- | --- | --- |
 | 官方 Google Gemini | `https://generativelanguage.googleapis.com` | `google` | 通常不需要 | 可选 `NANOBANANA_HIGHRES_MODEL` |
+| OpenAI Image API | `https://api.openai.com/v1` | `bearer` | 通常不需要 | 可选 `OPENAI_IMAGE_HIGHRES_MODEL` |
 | Gemini 兼容 relay | provider-specific | 通常为 `bearer` | 通常需要 | 使用 provider 自己的模型名 |
 | 自定义内部 endpoint | internal endpoint | provider-specific | 通常需要 | 使用 provider 自己的模型名 |
 
@@ -61,6 +63,32 @@ NANOBANANA_DEFAULT_MODEL=<your-default-image-model>
 NANOBANANA_HIGHRES_MODEL=<your-highres-image-model>
 NANOBANANA_AUTH_MODE=bearer
 NANOBANANA_ALLOW_THIRD_PARTY=1
+```
+
+## OpenAI Image API Pattern / OpenAI Image API 参考配置
+
+OpenAI is a first-class image backend for conceptual engineering figures and image edits. Use it when the user asks for ChatGPT/OpenAI-style image generation or when the local workflow has an OpenAI API key available.
+
+OpenAI 可以作为概念图和参考图编辑的一等生图后端。当用户明确想用 ChatGPT/OpenAI 风格生图，或者本地已经配置 OpenAI API key 时，可以选择这个路径。
+
+```env
+ENGINEERING_FIGURE_IMAGE_PROVIDER=openai
+OPENAI_API_KEY_FILE=$HOME/.codex/secrets/openai_api_key.txt
+OPENAI_IMAGE_MODEL=gpt-image-1.5
+OPENAI_IMAGE_HIGHRES_MODEL=gpt-image-1.5
+OPENAI_IMAGE_QUALITY=auto
+OPENAI_IMAGE_SIZE=auto
+OPENAI_IMAGE_OUTPUT_FORMAT=png
+```
+
+Direct command example:
+
+```powershell
+python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+  --provider openai `
+  --figure-template system-architecture `
+  --lang en `
+  "A retrieval-augmented generation system with OCR, chunking, embedding, vector search, reranking, and answer synthesis."
 ```
 
 ## Safety Notes / 安全说明

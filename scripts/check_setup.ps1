@@ -71,6 +71,7 @@ foreach ($rel in $requiredFiles) {
 
 $envFile = Join-Path $SecretsDir "nanobanana.env"
 $keyFile = Join-Path $SecretsDir "nanobanana_api_key.txt"
+$openaiKeyFile = Join-Path $SecretsDir "openai_api_key.txt"
 $envMap = @{}
 
 if (Test-Path $envFile) {
@@ -133,6 +134,30 @@ if (Test-Path $keyFile) {
 } else {
     Add-Result "FAIL" "Missing nanobanana_api_key.txt: $keyFile" "Copy `secrets/nanobanana_api_key.txt.example` to $keyFile and paste your real API key into it."
     $failed = $true
+}
+
+if (($envMap["ENGINEERING_FIGURE_IMAGE_PROVIDER"] -eq "openai") -or $envMap.ContainsKey("OPENAI_IMAGE_MODEL") -or (Test-Path $openaiKeyFile)) {
+    if ($envMap.ContainsKey("OPENAI_IMAGE_MODEL") -and $envMap["OPENAI_IMAGE_MODEL"]) {
+        Add-Result "PASS" "OPENAI_IMAGE_MODEL is set" $null
+    } else {
+        Add-Result "WARN" "OPENAI_IMAGE_MODEL is not set" "Add `OPENAI_IMAGE_MODEL=gpt-image-1.5` to $envFile or pass `--model` when using `--provider openai`."
+        $warned = $true
+    }
+
+    $configuredOpenAIKeyFile = $envMap["OPENAI_API_KEY_FILE"]
+    if (-not $configuredOpenAIKeyFile) { $configuredOpenAIKeyFile = $openaiKeyFile }
+    if (Test-Path $configuredOpenAIKeyFile) {
+        $openaiKey = (Get-Content -Raw -Path $configuredOpenAIKeyFile).Trim()
+        if (-not $openaiKey -or $openaiKey -eq "REPLACE_WITH_YOUR_CURRENT_VALID_OPENAI_API_KEY") {
+            Add-Result "WARN" "OpenAI API key file is missing a real key" "Paste your real OpenAI API key into $configuredOpenAIKeyFile before using `--provider openai`."
+            $warned = $true
+        } else {
+            Add-Result "PASS" "Found non-placeholder OpenAI API key file" $null
+        }
+    } else {
+        Add-Result "WARN" "OpenAI key file not found: $configuredOpenAIKeyFile" "Create this file only if you want to use `--provider openai`; Gemini/Banana generation is unaffected."
+        $warned = $true
+    }
 }
 
 if ($env:NANOBANANA_BASE_URL) {

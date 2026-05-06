@@ -10,6 +10,7 @@ Engineering Figure Banana is not a general-purpose academic figure platform. It 
 
 - Agent-native: designed for Codex and research-agent workflows instead of a standalone paper-upload product
 - Two-mode workflow: `image mode` for conceptual diagrams, `plot mode` for exact publication plots
+- Multi-provider image backend: Google Gemini/Banana remains supported, and OpenAI Image API can now be selected for conceptual figure generation or image edits
 - Engineering-first: optimized for CS, systems, algorithms, electronics, and embedded-paper visuals
 - Publication-aware: prioritizes white backgrounds, readable labels, compact palettes, and export-ready figures
 
@@ -62,6 +63,27 @@ Best for:
 - reference-inspired redraws and layout exploration
 
 Use this when visual structure matters more than exact numeric geometry.
+
+Image mode can use either backend:
+
+```powershell
+# Google Gemini / Banana-compatible backend
+python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+  --provider gemini `
+  --figure-template system-architecture `
+  --lang en `
+  "A retrieval-augmented generation system with OCR, chunking, embedding, vector search, reranking, and answer synthesis."
+
+# OpenAI Image API backend
+python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+  --provider openai `
+  --model gpt-image-1.5 `
+  --figure-template system-architecture `
+  --lang en `
+  "A retrieval-augmented generation system with OCR, chunking, embedding, vector search, reranking, and answer synthesis."
+```
+
+OpenAI configuration uses `OPENAI_API_KEY` or `OPENAI_API_KEY_FILE`. Gemini/Banana configuration continues to use the existing `NANOBANANA_*` variables.
 
 ### `plot mode`
 
@@ -123,6 +145,8 @@ python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py"
 ## Project Summary
 
 Engineering Figure Banana is an agent-native figure workflow for engineering and CS papers. It handles conceptual diagrams and exact publication plots with separate pipelines instead of treating paper figures as a single generic image-generation task.
+
+The historical repository name still fits the origin of the project, but the implementation is now moving toward a provider-neutral engineering-figure router. If the project is renamed later, good candidates are `engineering-figure-agent`, `engineering-figure-studio`, or `engineering-figure-router`.
 
 ## Notes
 

@@ -143,6 +143,19 @@ git clone https://github.com/Leey21/awesome-ai-research-writing $HOME/.codex/ski
 
 当结构表达比数值精确更重要时，用这个模式。
 
+`image mode` 现在可以选择两类后端：
+
+```powershell
+python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+  --provider openai `
+  --model gpt-image-1.5 `
+  --figure-template system-architecture `
+  --lang zh `
+  "一个包含 OCR、切分、嵌入、向量检索、重排序和答案生成的 RAG 系统。"
+```
+
+OpenAI 路径使用 `OPENAI_API_KEY` 或 `OPENAI_API_KEY_FILE`；原来的 Google Gemini / Banana 兼容路径继续使用 `NANOBANANA_*` 配置。
+
 ### `plot mode`
 
 适合：
@@ -440,6 +453,8 @@ pip install -r "$HOME/.codex/skills/engineering-figure-banana/requirements.txt"
 ## 项目简介
 
 `engineering-figure-banana` 是一个面向工程与计算机论文的 agent-native figure skill：概念图走图像模型，定量图走本地精确渲染。它更强调图形生产流程的可控性、学术风格约束和定量结果的准确表达，而不是把所有论文图都当作同一种通用生图任务来处理。
+
+仓库名可以暂时保留，因为 `banana` 是项目起源和已有用户认知的一部分。后续如果想更 provider-neutral，可以考虑 `engineering-figure-agent`、`engineering-figure-studio` 或 `engineering-figure-router`。
 
 ## 注意事项
 

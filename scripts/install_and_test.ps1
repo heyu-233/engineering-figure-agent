@@ -11,8 +11,10 @@ $secretsDir = Join-Path $CodexHome "secrets"
 $targetSkillDir = Join-Path $skillsDir "engineering-figure-banana"
 $envTemplate = Join-Path $SourceDir "secrets/nanobanana.env.example"
 $keyTemplate = Join-Path $SourceDir "secrets/nanobanana_api_key.txt.example"
+$openaiKeyTemplate = Join-Path $SourceDir "secrets/openai_api_key.txt.example"
 $envTarget = Join-Path $secretsDir "nanobanana.env"
 $keyTarget = Join-Path $secretsDir "nanobanana_api_key.txt"
+$openaiKeyTarget = Join-Path $secretsDir "openai_api_key.txt"
 $checkScript = Join-Path $targetSkillDir "scripts/check_setup.ps1"
 
 Write-Host "Installing Engineering Figure Banana" -ForegroundColor Cyan
@@ -46,10 +48,18 @@ if (-not (Test-Path $keyTarget) -and (Test-Path $keyTemplate)) {
     Write-Host "Kept existing nanobanana_api_key.txt" -ForegroundColor Yellow
 }
 
+if (-not (Test-Path $openaiKeyTarget) -and (Test-Path $openaiKeyTemplate)) {
+    Copy-Item -Path $openaiKeyTemplate -Destination $openaiKeyTarget
+    Write-Host "Created openai_api_key.txt from template" -ForegroundColor Green
+} else {
+    Write-Host "Kept existing openai_api_key.txt" -ForegroundColor Yellow
+}
+
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Cyan
 Write-Host "1. Edit $envTarget"
 Write-Host "2. Put your real API key into $keyTarget"
+Write-Host "   Optional OpenAI key file: $openaiKeyTarget"
 Write-Host "3. Load env in the same shell:"
 Write-Host "   . `"$targetSkillDir\scripts\load_nanobanana_env.ps1`""
 Write-Host "4. Open the interactive wizard or run the minimal README command:"
