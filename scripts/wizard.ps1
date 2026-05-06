@@ -45,12 +45,13 @@ if ($highres) {
 }
 
 if ($mode -eq "image") {
+    $provider = @("gemini", "openai")[(Ask-Choice "Select image provider" @("gemini - Google Gemini / Banana-compatible", "openai - OpenAI Image API") 0)]
     $templateOptions = @("system-architecture", "algorithm-workflow", "graphical-abstract", "electronic-schematic")
     $template = $templateOptions[(Ask-Choice "Select engineering figure template" $templateOptions 0)]
     $inputSource = @("direct", "file")[(Ask-Choice "Background source" @("Paste technical background directly", "Read from a text or markdown file") 0)]
 
     $promptArg = ""
-    $extraArgs = @("--figure-template $template", "--lang $lang", "--out-dir `"$DefaultOutDir`"")
+    $extraArgs = @("--provider $provider", "--figure-template $template", "--lang $lang", "--out-dir `"$DefaultOutDir`"")
 
     if ($highres) {
         $extraArgs += "--highres"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate or edit images with the Gemini generateContent API."""
+"""Generate or edit engineering figures with Gemini-compatible or OpenAI image APIs."""
 
 from __future__ import annotations
 
@@ -10,15 +10,18 @@ import mimetypes
 import os
 import re
 import sys
+import uuid
 import urllib.parse
 import urllib.error
 import urllib.request
 from pathlib import Path
 
 
-OFFICIAL_BASE_URL = "https://generativelanguage.googleapis.com"
-OFFICIAL_HOSTNAME = "generativelanguage.googleapis.com"
-DEFAULT_MODEL = "gemini-3.1-flash-image-preview"
+GEMINI_OFFICIAL_BASE_URL = "https://generativelanguage.googleapis.com"
+GEMINI_OFFICIAL_HOSTNAME = "generativelanguage.googleapis.com"
+GEMINI_DEFAULT_MODEL = "gemini-3.1-flash-image-preview"
+OPENAI_DEFAULT_BASE_URL = "https://api.openai.com/v1"
+OPENAI_DEFAULT_MODEL = "gpt-image-1.5"
 DEFAULT_TIMEOUT = 120
 DEFAULT_AUTH_MODE = "google"
 HIGHRES_HINTS = ("2k", "highres", "high-res", "high resolution", "final export", "final-export", "final quality")
@@ -40,8 +43,14 @@ def resolve_lang(raw_prompt: str, requested_lang: str | None) -> str:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Generate or edit images with Gemini generateContent.")
+    parser = argparse.ArgumentParser(description="Generate or edit engineering figures with image providers.")
     parser.add_argument("prompt", nargs="?", help="Prompt text or scientific background for shortcut modes.")
+    parser.add_argument(
+        "--provider",
+        choices=("gemini", "banana", "openai"),
+        default=os.getenv("ENGINEERING_FIGURE_IMAGE_PROVIDER", "gemini"),
+        help="Image provider. 'banana' is an alias for the Gemini-compatible provider.",
+    )
     parser.add_argument(
         "--prompt-file",
         help="Read prompt text or scientific background from a text or markdown file.",
@@ -77,9 +86,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--base-url",
         default=os.getenv("NANOBANANA_BASE_URL"),
-        help=f"Gemini-compatible base URL. Must be set explicitly, e.g. {OFFICIAL_BASE_URL}.",
+        help=f"Gemini-compatible base URL. Must be set explicitly, e.g. {GEMINI_OFFICIAL_BASE_URL}.",
     )
-    parser.add_argument("--model", default=None)
+    parser.add_argument("--model", default=None, help="Provider model override.")
     parser.add_argument(
         "--highres",
         action="store_true",
@@ -93,13 +102,61 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--api-key",
-        default=os.getenv("NANOBANANA_API_KEY"),
-        help="API key. Defaults to NANOBANANA_API_KEY.",
+        default=None,
+        help="API key. Defaults to NANOBANANA_API_KEY for Gemini and OPENAI_API_KEY for OpenAI.",
     )
     parser.add_argument(
         "--api-key-file",
-        default=os.getenv("NANOBANANA_API_KEY_FILE"),
+        default=None,
         help="Path to a file containing the API key. Preferred when you do not want the key shown in the command line.",
+    )
+    parser.add_argument(
+        "--openai-base-url",
+        default=os.getenv("OPENAI_BASE_URL", OPENAI_DEFAULT_BASE_URL),
+        help=f"OpenAI API base URL. Defaults to {OPENAI_DEFAULT_BASE_URL}.",
+    )
+    parser.add_argument("--openai-api-key", default=os.getenv("OPENAI_API_KEY"), help="OpenAI API key.")
+    parser.add_argument(
+        "--openai-api-key-file",
+        default=os.getenv("OPENAI_API_KEY_FILE"),
+        help="Path to a file containing the OpenAI API key.",
+    )
+    parser.add_argument(
+        "--openai-quality",
+        default=os.getenv("OPENAI_IMAGE_QUALITY", "auto"),
+        help="OpenAI image quality, e.g. auto, low, medium, high.",
+    )
+    parser.add_argument(
+        "--openai-size",
+        default=os.getenv("OPENAI_IMAGE_SIZE", "auto"),
+        help="OpenAI image size, e.g. auto, 1024x1024, 1024x1536, 1536x1024.",
+    )
+    parser.add_argument(
+        "--openai-output-format",
+        default=os.getenv("OPENAI_IMAGE_OUTPUT_FORMAT", "png"),
+        choices=("png", "jpeg", "webp"),
+        help="OpenAI output image format.",
+    )
+    parser.add_argument(
+        "--openai-background",
+        default=os.getenv("OPENAI_IMAGE_BACKGROUND"),
+        help="OpenAI image background option, e.g. auto, opaque, transparent.",
+    )
+    parser.add_argument(
+        "--openai-moderation",
+        default=os.getenv("OPENAI_IMAGE_MODERATION"),
+        help="OpenAI image moderation option when supported by the selected model.",
+    )
+    parser.add_argument(
+        "--openai-input-fidelity",
+        default=os.getenv("OPENAI_IMAGE_INPUT_FIDELITY"),
+        help="OpenAI image edit input fidelity when supported, e.g. high.",
+    )
+    parser.add_argument(
+        "--n",
+        type=int,
+        default=int(os.getenv("IMAGE_GENERATION_N", "1")),
+        help="Number of images to request when supported.",
     )
     parser.add_argument(
         "--aspect-ratio",
@@ -148,24 +205,24 @@ def resolve_base_url(args: argparse.Namespace) -> str:
     if not base_url:
         raise SystemExit(
             "Missing base URL. Set NANOBANANA_BASE_URL or pass --base-url explicitly. "
-            f"Official Google example: {OFFICIAL_BASE_URL}"
+            f"Official Google example: {GEMINI_OFFICIAL_BASE_URL}"
         )
 
     parsed = urllib.parse.urlparse(base_url)
     if parsed.scheme != "https" or not parsed.netloc:
-        raise SystemExit(f"Invalid base URL: {base_url}. Use an explicit https URL such as {OFFICIAL_BASE_URL}.")
+        raise SystemExit(f"Invalid base URL: {base_url}. Use an explicit https URL such as {GEMINI_OFFICIAL_BASE_URL}.")
     return base_url.rstrip("/")
 
 
 def assert_endpoint_allowed(base_url: str, args: argparse.Namespace) -> None:
     hostname = urllib.parse.urlparse(base_url).hostname or ""
     allow_third_party = args.allow_third_party or os.getenv("NANOBANANA_ALLOW_THIRD_PARTY") == "1"
-    if hostname != OFFICIAL_HOSTNAME and not allow_third_party:
+    if hostname != GEMINI_OFFICIAL_HOSTNAME and not allow_third_party:
         raise SystemExit(
             "Refusing to send API keys or user-provided files to a third-party Gemini-compatible provider. "
             "If you intend to use a non-official endpoint, set NANOBANANA_ALLOW_THIRD_PARTY=1 "
             "or pass --allow-third-party. "
-            f"Official Google endpoint: {OFFICIAL_BASE_URL}"
+            f"Official Google endpoint: {GEMINI_OFFICIAL_BASE_URL}"
         )
 
 
@@ -238,7 +295,7 @@ def resolve_model(args: argparse.Namespace) -> str:
     if args.model:
         return args.model
 
-    default_model = os.getenv("NANOBANANA_DEFAULT_MODEL") or os.getenv("NANOBANANA_MODEL") or DEFAULT_MODEL
+    default_model = os.getenv("NANOBANANA_DEFAULT_MODEL") or os.getenv("NANOBANANA_MODEL") or GEMINI_DEFAULT_MODEL
     highres_model = os.getenv("NANOBANANA_HIGHRES_MODEL")
 
     if should_use_highres_model(args):
@@ -255,12 +312,47 @@ def resolve_model(args: argparse.Namespace) -> str:
 def resolve_api_key(args: argparse.Namespace) -> str:
     if args.api_key:
         return args.api_key
-    if args.api_key_file:
-        path = Path(args.api_key_file)
+    env_key = os.getenv("NANOBANANA_API_KEY")
+    if env_key:
+        return env_key
+    key_file = args.api_key_file or os.getenv("NANOBANANA_API_KEY_FILE")
+    if key_file:
+        path = Path(key_file)
         if not path.is_file():
             raise SystemExit(f"API key file not found: {path}")
         return path.read_text(encoding="utf-8").strip()
     raise SystemExit("Missing API key. Set NANOBANANA_API_KEY, NANOBANANA_API_KEY_FILE, or pass --api-key.")
+
+
+def resolve_openai_base_url(args: argparse.Namespace) -> str:
+    base_url = args.openai_base_url
+    parsed = urllib.parse.urlparse(base_url)
+    if parsed.scheme != "https" or not parsed.netloc:
+        raise SystemExit(f"Invalid OpenAI base URL: {base_url}. Use an explicit https URL.")
+    return base_url.rstrip("/")
+
+
+def resolve_openai_model(args: argparse.Namespace) -> str:
+    if args.model:
+        return args.model
+    highres_model = os.getenv("OPENAI_IMAGE_HIGHRES_MODEL")
+    if should_use_highres_model(args) and highres_model:
+        return highres_model
+    return os.getenv("OPENAI_IMAGE_MODEL", OPENAI_DEFAULT_MODEL)
+
+
+def resolve_openai_api_key(args: argparse.Namespace) -> str:
+    if args.openai_api_key:
+        return args.openai_api_key
+    if args.api_key:
+        return args.api_key
+    key_file = args.openai_api_key_file or os.getenv("OPENAI_API_KEY_FILE")
+    if key_file:
+        path = Path(key_file)
+        if not path.is_file():
+            raise SystemExit(f"OpenAI API key file not found: {path}")
+        return path.read_text(encoding="utf-8").strip()
+    raise SystemExit("Missing OpenAI API key. Set OPENAI_API_KEY, OPENAI_API_KEY_FILE, or pass --openai-api-key.")
 
 
 def build_payload(args: argparse.Namespace) -> dict:
@@ -300,7 +392,7 @@ def build_payload(args: argparse.Namespace) -> dict:
     return payload
 
 
-def request_json(args: argparse.Namespace) -> dict:
+def request_gemini_json(args: argparse.Namespace) -> dict:
     base_url = resolve_base_url(args)
     assert_endpoint_allowed(base_url, args)
     api_key = resolve_api_key(args)
@@ -357,6 +449,112 @@ def request_json(args: argparse.Namespace) -> dict:
         raise SystemExit(f"Request failed: {exc.reason}") from exc
 
 
+def encode_multipart_form(fields: list[tuple[str, str]], files: list[tuple[str, Path]]) -> tuple[bytes, str]:
+    boundary = f"----engineering-figure-{uuid.uuid4().hex}"
+    chunks: list[bytes] = []
+
+    for name, value in fields:
+        chunks.append(f"--{boundary}\r\n".encode("ascii"))
+        chunks.append(f'Content-Disposition: form-data; name="{name}"\r\n\r\n'.encode("utf-8"))
+        chunks.append(str(value).encode("utf-8"))
+        chunks.append(b"\r\n")
+
+    for name, path in files:
+        if not path.is_file():
+            raise SystemExit(f"Input image not found: {path}")
+        mime_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
+        chunks.append(f"--{boundary}\r\n".encode("ascii"))
+        chunks.append(
+            f'Content-Disposition: form-data; name="{name}"; filename="{path.name}"\r\n'.encode("utf-8")
+        )
+        chunks.append(f"Content-Type: {mime_type}\r\n\r\n".encode("ascii"))
+        chunks.append(path.read_bytes())
+        chunks.append(b"\r\n")
+
+    chunks.append(f"--{boundary}--\r\n".encode("ascii"))
+    return b"".join(chunks), boundary
+
+
+def openai_generation_payload(args: argparse.Namespace) -> dict:
+    payload = {
+        "model": resolve_openai_model(args),
+        "prompt": resolve_prompt(args),
+        "n": args.n,
+    }
+    if args.openai_quality:
+        payload["quality"] = args.openai_quality
+    if args.openai_size:
+        payload["size"] = args.openai_size
+    if args.openai_output_format:
+        payload["output_format"] = args.openai_output_format
+    if args.openai_background:
+        payload["background"] = args.openai_background
+    if args.openai_moderation:
+        payload["moderation"] = args.openai_moderation
+    return payload
+
+
+def request_openai_json(args: argparse.Namespace) -> dict:
+    base_url = resolve_openai_base_url(args)
+    api_key = resolve_openai_api_key(args)
+    headers = {
+        "Accept": "application/json",
+        "Authorization": f"Bearer {api_key}",
+        "User-Agent": "engineering-figure-banana/1.0",
+    }
+
+    if args.input_image:
+        fields = [
+            ("model", resolve_openai_model(args)),
+            ("prompt", resolve_prompt(args)),
+            ("n", str(args.n)),
+        ]
+        optional_fields = {
+            "quality": args.openai_quality,
+            "size": args.openai_size,
+            "output_format": args.openai_output_format,
+            "background": args.openai_background,
+            "moderation": args.openai_moderation,
+            "input_fidelity": args.openai_input_fidelity,
+        }
+        fields.extend((name, value) for name, value in optional_fields.items() if value)
+        files = [("image[]", Path(path_str)) for path_str in args.input_image]
+        body, boundary = encode_multipart_form(fields, files)
+        headers["Content-Type"] = f"multipart/form-data; boundary={boundary}"
+        url = f"{base_url}/images/edits"
+        data = body
+    else:
+        headers["Content-Type"] = "application/json"
+        url = f"{base_url}/images/generations"
+        data = json.dumps(openai_generation_payload(args)).encode("utf-8")
+
+    request = urllib.request.Request(url, data=data, headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(request, timeout=args.timeout) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        if exc.code == 429 and is_explicit_highres_request(args):
+            raise SystemExit(
+                "The OpenAI high-resolution or final-quality request was rate limited (HTTP 429). "
+                "Generation has been stopped intentionally. Ask the human whether to retry or explicitly allow fallback."
+            ) from exc
+        if is_explicit_highres_request(args):
+            raise SystemExit(
+                f"OpenAI high-resolution or final-quality generation failed with HTTP {exc.code}. "
+                "Generation has been stopped intentionally. Ask the human whether to retry or explicitly allow fallback. "
+                f"Response body: {body}"
+            ) from exc
+        raise SystemExit(f"OpenAI request failed with HTTP {exc.code}: {body}") from exc
+    except urllib.error.URLError as exc:
+        if is_explicit_highres_request(args):
+            raise SystemExit(
+                f"OpenAI high-resolution or final-quality generation failed due to a network error: {exc.reason}. "
+                "Generation has been stopped intentionally. Ask the human whether to retry or explicitly allow fallback."
+            ) from exc
+        raise SystemExit(f"OpenAI request failed: {exc.reason}") from exc
+
+
 def save_parts(response_json: dict, out_dir: Path, prefix: str) -> list[str]:
     candidates = response_json.get("candidates") or []
     if not candidates:
@@ -396,13 +594,45 @@ def save_parts(response_json: dict, out_dir: Path, prefix: str) -> list[str]:
     return outputs
 
 
+def save_openai_parts(response_json: dict, out_dir: Path, prefix: str, default_format: str) -> list[str]:
+    data = response_json.get("data") or []
+    if not data:
+        raise SystemExit(f"Unexpected OpenAI response shape: {json.dumps(response_json, ensure_ascii=False)}")
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    outputs: list[str] = []
+    for index, item in enumerate(data, start=1):
+        image_base64 = item.get("b64_json")
+        if image_base64:
+            extension = ".jpg" if default_format == "jpeg" else f".{default_format or 'png'}"
+            path = out_dir / f"{prefix}-{index}{extension}"
+            path.write_bytes(base64.b64decode(image_base64))
+            outputs.append(str(path))
+            continue
+        url = item.get("url")
+        if url:
+            path = out_dir / f"{prefix}-url-{index}.txt"
+            path.write_text(url, encoding="utf-8")
+            outputs.append(str(path))
+
+    if not outputs:
+        raise SystemExit(f"No OpenAI image data found: {json.dumps(response_json, ensure_ascii=False)}")
+    return outputs
+
+
 def main() -> int:
     args = build_parser().parse_args()
     if args.print_prompt:
         print(resolve_prompt(args))
         return 0
-    response_json = request_json(args)
-    for output in save_parts(response_json, Path(args.out_dir), args.prefix):
+    provider = "gemini" if args.provider == "banana" else args.provider
+    if provider == "openai":
+        response_json = request_openai_json(args)
+        outputs = save_openai_parts(response_json, Path(args.out_dir), args.prefix, args.openai_output_format)
+    else:
+        response_json = request_gemini_json(args)
+        outputs = save_parts(response_json, Path(args.out_dir), args.prefix)
+    for output in outputs:
         print(output)
     return 0
 

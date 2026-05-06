@@ -144,6 +144,19 @@ Best for:
 
 Use this when visual structure matters more than exact numeric geometry.
 
+Image mode can use the existing Gemini/Banana-compatible backend or the OpenAI Image API backend:
+
+```powershell
+python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+  --provider openai `
+  --model gpt-image-1.5 `
+  --figure-template system-architecture `
+  --lang en `
+  "A retrieval-augmented generation system with OCR, chunking, embedding, vector search, reranking, and answer synthesis."
+```
+
+Use `OPENAI_API_KEY` or `OPENAI_API_KEY_FILE` for OpenAI. The original `NANOBANANA_*` configuration still controls the Gemini/Banana-compatible path.
+
 ### `plot mode`
 
 Best for:
@@ -441,6 +454,8 @@ Recommended doc strategy:
 ## Project Summary
 
 Engineering Figure Banana is an agent-native figure workflow for engineering and CS papers: image models for conceptual diagrams, local rendering for exact quantitative plots. It emphasizes controllable figure production, publication-oriented constraints, and exact quantitative rendering instead of treating every paper figure as the same generic image-generation problem.
+
+The repository name can stay as a recognizable historical name for now. If the project is renamed later, more provider-neutral names such as `engineering-figure-agent`, `engineering-figure-studio`, or `engineering-figure-router` would better match the expanded OpenAI plus Gemini backend design.
 
 ## Notes
 

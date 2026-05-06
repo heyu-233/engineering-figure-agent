@@ -19,11 +19,12 @@ Use this skill for the figure-production layer after the figure goal is already 
 - If the user is still asking what figure they should make, what panels should exist, what claim each panel supports, or how the figure should be explained in the paper, hand off upstream to `ai-research-writing-guide` first.
 - Recommended input from that upstream handoff: `figure goal`, `figure type`, `panel plan or module list`, `must-keep terms`, `caption or message`, `paper language`, and `visual style constraints`.
 
-It should be treated as a provider-neutral workflow for Gemini-compatible image endpoints:
+It should be treated as a provider-neutral workflow for image-generation backends:
 
-- prefer the official Google Gemini endpoint as the reference setup
-- allow third-party relays only when the user intentionally chooses them
-- expect model names, auth mode, and high-resolution options to vary by provider
+- keep the official Google Gemini endpoint as the Banana/Gemini reference setup
+- allow OpenAI Image API as a first-class image backend for conceptual figures and image edits
+- allow third-party Gemini-compatible relays only when the user intentionally chooses them
+- expect model names, auth mode, image-size options, and high-resolution options to vary by provider
 
 Use two modes:
 
@@ -39,6 +40,8 @@ Rule of thumb:
 - If a figure mixes both, render the quantitative plot locally first and use image generation only for the non-quantitative panels.
 - Use `NANOBANANA_DEFAULT_MODEL` as the normal model for routine generation.
 - Use `NANOBANANA_HIGHRES_MODEL` only when the user explicitly asks for higher resolution, final-export quality, or specifically mentions `2k`.
+- Use `OPENAI_IMAGE_MODEL` when `--provider openai` is selected. The normal public default is `gpt-image-1.5`, but local configuration may override it.
+- Use `OPENAI_IMAGE_HIGHRES_MODEL` for OpenAI only when a distinct final-quality or high-resolution model has been configured locally.
 - The script now auto-selects `NANOBANANA_HIGHRES_MODEL` when the request clearly indicates high-resolution output, while keeping the normal default for routine runs.
 - If a user clearly asks for `pro-2k`, 2K, higher-resolution, or final-export quality and that high-resolution path fails, stop immediately instead of silently falling back to a cheaper or lower-tier model.
 - In that failure case, explicitly ask the human whether to retry the high-resolution request or to allow fallback. Do not make that downgrade decision automatically.
@@ -102,6 +105,23 @@ For New API style relays that use `Authorization: Bearer ...`, also set:
 export NANOBANANA_AUTH_MODE="bearer"
 ```
 
+For OpenAI Image API generation, set:
+
+```bash
+export OPENAI_API_KEY="your-openai-api-key"
+export OPENAI_IMAGE_MODEL="gpt-image-1.5"
+```
+
+Then select the provider explicitly:
+
+```bash
+python3 scripts/generate_image.py \
+  --provider openai \
+  --figure-template system-architecture \
+  --lang en \
+  "A multimodal retrieval-augmented generation system with document ingestion, chunking, embedding, vector search, cross-encoder reranking, and final answer synthesis."
+```
+
 Recommended model configuration for this customized setup:
 
 ```bash
@@ -156,8 +176,9 @@ python3 scripts/plot_publication_figure.py ./spec.json --out-path ./output/plots
 6. Do not fabricate measurements, benchmark values, hardware specs, or unsupported causal claims.
 7. Keep the normal default model for routine work, and use the configured high-resolution model only when the request clearly indicates 2K or final-export quality.
 8. If `NANOBANANA_*` variables are missing, load `scripts/load_nanobanana_env.ps1` first, then run generation in the same shell session.
-9. If the user explicitly names a provider model, use a one-off `--model` override; otherwise let the script choose between `NANOBANANA_DEFAULT_MODEL` and `NANOBANANA_HIGHRES_MODEL`.
-10. If a high-resolution request fails because of rate limits, network problems, upstream errors, or missing `NANOBANANA_HIGHRES_MODEL`, stop and ask the human what to do next. Never silently downgrade and burn tokens on a lower-tier model.
+9. If the user wants ChatGPT/OpenAI-style image generation, use `--provider openai` and the `OPENAI_*` environment variables. Do not route OpenAI requests through Gemini relay settings.
+10. If the user explicitly names a provider model, use a one-off `--model` override; otherwise let the script choose between the configured default and high-resolution model for the selected provider.
+11. If a high-resolution request fails because of rate limits, network problems, upstream errors, or a missing high-resolution model setting, stop and ask the human what to do next. Never silently downgrade and burn tokens on a lower-tier model.
 
 ## Figure Templates
 
