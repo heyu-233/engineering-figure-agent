@@ -1,6 +1,6 @@
 param(
-    [string]$SkillDir = "$HOME/.codex/skills/engineering-figure-banana",
-    [string]$DefaultOutDir = "./output/nanobanana"
+    [string]$SkillDir = "$HOME/.codex/skills/engineering-figure-agent",
+    [string]$DefaultOutDir = "./output/engineering-figure"
 )
 
 $ErrorActionPreference = "Stop"

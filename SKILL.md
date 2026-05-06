@@ -1,9 +1,9 @@
 ---
-name: engineering-figure-banana
+name: engineering-figure-agent
 description: Use when the user needs computer science, electronics, algorithms, or general engineering paper figures with Gemini or Nano Banana image models, or when they need exact publication-style plots rendered from numeric data. Prefer this skill for system architecture figures, algorithm workflows, pipeline diagrams, hardware block diagrams, circuit-level schematics, benchmark charts, ablation plots, scatter or heatmap panels, figure redrawing, and image editing through a Gemini-compatible endpoint.
 ---
 
-# Engineering Figure Banana
+# Engineering Figure Agent
 
 ## Overview
 
@@ -75,7 +75,7 @@ Expected behavior:
 PowerShell bootstrap in the same shell session:
 
 ```powershell
-. "$HOME/.codex/skills/engineering-figure-banana/scripts/load_nanobanana_env.ps1"
+. "$HOME/.codex/skills/engineering-figure-agent/scripts/load_nanobanana_env.ps1"
 ```
 
 After that, run the normal `generate_image.py` command in the same PowerShell session.

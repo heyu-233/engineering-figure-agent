@@ -84,7 +84,7 @@ OPENAI_IMAGE_OUTPUT_FORMAT=png
 Direct command example:
 
 ```powershell
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --provider openai `
   --figure-template system-architecture `
   --lang en `

@@ -33,7 +33,7 @@ Show the complete module hierarchy and the main data flow from input to final ou
 
 ## Recommended Command
 ```powershell
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --figure-template system-architecture `
   --lang en `
   "[paste your technical background here]"

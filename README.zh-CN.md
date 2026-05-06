@@ -1,6 +1,6 @@
-# Engineering Figure Banana
+# Engineering Figure Agent
 
-`engineering-figure-banana` 不是一个通用配图平台，而是一个面向 agent 工作流的工程论文配图 skill，专门把概念图和精确定量图分开处理。
+`engineering-figure-agent` 不是一个通用配图平台，而是一个面向 agent 工作流的工程论文配图 skill，专门把概念图和精确定量图分开处理。
 
 ## 项目定位
 
@@ -57,7 +57,7 @@
    - 图的类型
    - 面板结构 / 模块结构
    - caption 要保留什么信息
-2. 再用 `engineering-figure-banana` 生成最终图
+2. 再用 `engineering-figure-agent` 生成最终图
 
 建议上游传给本 skill 的字段：
 
@@ -79,7 +79,7 @@
 - 产出 panel plan / module plan
 - 保留 caption logic 和 must-keep terms
 
-`engineering-figure-banana` 本身可以单独使用。  
+`engineering-figure-agent` 本身可以单独使用。  
 如果你已经知道自己要画什么图，可以直接使用本 skill，不需要先安装上游 skill。
 
 如果你想走更完整的工作流：
@@ -146,7 +146,7 @@ git clone https://github.com/Leey21/awesome-ai-research-writing $HOME/.codex/ski
 `image mode` 现在可以选择两类后端：
 
 ```powershell
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --provider openai `
   --model gpt-image-1.5 `
   --figure-template system-architecture `
@@ -177,7 +177,7 @@ OpenAI 路径使用 `OPENAI_API_KEY` 或 `OPENAI_API_KEY_FILE`；原来的 Googl
 
 ## Platform Support
 
-目前主要验证平台仍然是 Windows，但 `engineering-figure-banana` 的核心工作流并不局限于 Windows。
+目前主要验证平台仍然是 Windows，但 `engineering-figure-agent` 的核心工作流并不局限于 Windows。
 
 - 已经有用户在 macOS 上成功安装并使用
 - 有些场景下也可以通过 AI 辅助完成安装，而不一定需要全程手动配置
@@ -198,11 +198,11 @@ OpenAI 路径使用 `OPENAI_API_KEY` 或 `OPENAI_API_KEY_FILE`；原来的 Googl
 如果你第一次安装，只想走一条最短路径，可以直接在 PowerShell 里按顺序执行：
 
 ```powershell
-git clone https://github.com/heyu-233/engineering-figure-banana $HOME/.codex/skills/engineering-figure-banana
-Copy-Item $HOME/.codex/skills/engineering-figure-banana/secrets/nanobanana.env.example $HOME/.codex/secrets/nanobanana.env
-Copy-Item $HOME/.codex/skills/engineering-figure-banana/secrets/nanobanana_api_key.txt.example $HOME/.codex/secrets/nanobanana_api_key.txt
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/install_and_test.ps1" -RunSetupCheck
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/check_setup.ps1"
+git clone https://github.com/heyu-233/engineering-figure-agent $HOME/.codex/skills/engineering-figure-agent
+Copy-Item $HOME/.codex/skills/engineering-figure-agent/secrets/nanobanana.env.example $HOME/.codex/secrets/nanobanana.env
+Copy-Item $HOME/.codex/skills/engineering-figure-agent/secrets/nanobanana_api_key.txt.example $HOME/.codex/secrets/nanobanana_api_key.txt
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/install_and_test.ps1" -RunSetupCheck
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/check_setup.ps1"
 ```
 
 然后：
@@ -235,11 +235,11 @@ Copy-Item $HOME/.codex/skills/engineering-figure-banana/secrets/nanobanana_api_k
 如果你的环境仍然需要手动调整，可以参考下面这组 fallback 步骤：
 
 ```bash
-git clone https://github.com/heyu-233/engineering-figure-banana ~/.codex/skills/engineering-figure-banana
+git clone https://github.com/heyu-233/engineering-figure-agent ~/.codex/skills/engineering-figure-agent
 mkdir -p ~/.codex/secrets
-cp ~/.codex/skills/engineering-figure-banana/secrets/nanobanana.env.example ~/.codex/secrets/nanobanana.env
-cp ~/.codex/skills/engineering-figure-banana/secrets/nanobanana_api_key.txt.example ~/.codex/secrets/nanobanana_api_key.txt
-python3 -m pip install -r ~/.codex/skills/engineering-figure-banana/requirements.txt
+cp ~/.codex/skills/engineering-figure-agent/secrets/nanobanana.env.example ~/.codex/secrets/nanobanana.env
+cp ~/.codex/skills/engineering-figure-agent/secrets/nanobanana_api_key.txt.example ~/.codex/secrets/nanobanana_api_key.txt
+python3 -m pip install -r ~/.codex/skills/engineering-figure-agent/requirements.txt
 ```
 
 然后：
@@ -252,7 +252,7 @@ python3 -m pip install -r ~/.codex/skills/engineering-figure-banana/requirements
 例如：
 
 ```bash
-python3 ~/.codex/skills/engineering-figure-banana/scripts/generate_image.py \
+python3 ~/.codex/skills/engineering-figure-agent/scripts/generate_image.py \
   --figure-template system-architecture \
   --print-prompt \
   "A retrieval-augmented generation system with OCR, chunking, embedding, vector search, reranking, and answer synthesis."
@@ -272,7 +272,7 @@ python3 ~/.codex/skills/engineering-figure-banana/scripts/generate_image.py \
 ### 1. 放到 Codex skill 目录
 
 ```powershell
-$HOME/.codex/skills/engineering-figure-banana
+$HOME/.codex/skills/engineering-figure-agent
 ```
 
 ### 2. 配置本地 secrets
@@ -290,20 +290,20 @@ $HOME/.codex/skills/engineering-figure-banana
 ### 3. 跑安装与检查
 
 ```powershell
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/install_and_test.ps1" -RunSetupCheck
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/check_setup.ps1"
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/install_and_test.ps1" -RunSetupCheck
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/check_setup.ps1"
 ```
 
 ### 4. 加载环境变量
 
 ```powershell
-. "$HOME/.codex/skills/engineering-figure-banana/scripts/load_nanobanana_env.ps1"
+. "$HOME/.codex/skills/engineering-figure-agent/scripts/load_nanobanana_env.ps1"
 ```
 
 ### 5. 跑一个最小示例
 
 ```powershell
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --figure-template system-architecture `
   --lang en `
   "A retrieval-augmented generation system with OCR, chunking, embedding, vector search, reranking, and answer synthesis."
@@ -353,15 +353,15 @@ NANOBANANA_API_KEY_FILE=C:/Users/sly92/.codex/secrets/nanobanana_api_key.txt
 
 例如：
 
-- `用 engineering-figure-banana 帮我生成一个系统架构图 prompt`
-- `用 engineering-figure-banana 帮我画一个 benchmark 柱状图`
+- `用 engineering-figure-agent 帮我生成一个系统架构图 prompt`
+- `用 engineering-figure-agent 帮我画一个 benchmark 柱状图`
 
 如果 Codex 能按这个 skill 的规则响应，说明识别正常。
 
 ### 方法 2：先跑 setup 脚本
 
 ```powershell
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/check_setup.ps1"
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/check_setup.ps1"
 ```
 
 这个脚本能帮助你快速确认：
@@ -373,7 +373,7 @@ NANOBANANA_API_KEY_FILE=C:/Users/sly92/.codex/secrets/nanobanana_api_key.txt
 ### 方法 3：测试最小 prompt 生成链
 
 ```powershell
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --figure-template system-architecture `
   --print-prompt `
   "A retrieval system with OCR, embedding, vector search, reranking, and answer synthesis."
@@ -417,7 +417,7 @@ python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py"
 - 执行：
 
 ```powershell
-pip install -r "$HOME/.codex/skills/engineering-figure-banana/requirements.txt"
+pip install -r "$HOME/.codex/skills/engineering-figure-agent/requirements.txt"
 ```
 
 ## 示例图
@@ -452,9 +452,7 @@ pip install -r "$HOME/.codex/skills/engineering-figure-banana/requirements.txt"
 
 ## 项目简介
 
-`engineering-figure-banana` 是一个面向工程与计算机论文的 agent-native figure skill：概念图走图像模型，定量图走本地精确渲染。它更强调图形生产流程的可控性、学术风格约束和定量结果的准确表达，而不是把所有论文图都当作同一种通用生图任务来处理。
-
-仓库名可以暂时保留，因为 `banana` 是项目起源和已有用户认知的一部分。后续如果想更 provider-neutral，可以考虑 `engineering-figure-agent`、`engineering-figure-studio` 或 `engineering-figure-router`。
+`engineering-figure-agent` 是一个面向工程与计算机论文的 agent-native figure skill：概念图走图像模型，定量图走本地精确渲染。它更强调图形生产流程的可控性、学术风格约束和定量结果的准确表达，而不是把所有论文图都当作同一种通用生图任务来处理。
 
 ## 注意事项
 

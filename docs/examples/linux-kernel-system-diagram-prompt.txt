@@ -1,4 +1,4 @@
-﻿Create a publication-quality system architecture figure for a computer science or engineering paper. Focus on the full module hierarchy, data flow, interfaces, and the role of each functional block.
+Create a publication-quality system architecture figure for a computer science or engineering paper. Focus on the full module hierarchy, data flow, interfaces, and the role of each functional block.
 
 Clearly show inputs, preprocessing, model or algorithm components, memory or retrieval stores, controllers, hardware accelerators, communication links, and outputs where relevant. Use arrows and short annotations to explain how data, signals, or control messages move through the system. Make the main path explicit and keep side branches visually secondary.
 

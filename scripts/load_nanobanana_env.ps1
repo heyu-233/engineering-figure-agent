@@ -1,4 +1,4 @@
-﻿param(
+param(
     [string]$SecretsDir = "$HOME/.codex/secrets"
 )
 

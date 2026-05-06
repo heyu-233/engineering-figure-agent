@@ -1,6 +1,6 @@
-# Engineering Figure Banana
+# Engineering Figure Agent
 
-Engineering Figure Banana is not a general academic-figure platform. It is an agent-native skill for engineering and CS paper figures, designed to separate conceptual diagrams from exact quantitative plots.
+Engineering Figure Agent is not a general academic-figure platform. It is an agent-native skill for engineering and CS paper figures, designed to separate conceptual diagrams from exact quantitative plots.
 
 ## Positioning
 
@@ -58,7 +58,7 @@ The best workflow is usually:
    - what figure type is appropriate
    - what panel or module structure is required
    - what caption logic must be preserved
-2. Use `engineering-figure-banana` to render the final figure
+2. Use `engineering-figure-agent` to render the final figure
 
 Recommended upstream handoff fields:
 
@@ -80,7 +80,7 @@ It is useful for:
 - drafting a panel plan or module plan
 - preserving caption logic and must-keep terms
 
-`engineering-figure-banana` works on its own.  
+`engineering-figure-agent` works on its own.  
 If you already know what figure you want to make, you can use this skill directly without installing the upstream one.
 
 If you want a fuller workflow like:
@@ -147,7 +147,7 @@ Use this when visual structure matters more than exact numeric geometry.
 Image mode can use the existing Gemini/Banana-compatible backend or the OpenAI Image API backend:
 
 ```powershell
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --provider openai `
   --model gpt-image-1.5 `
   --figure-template system-architecture `
@@ -199,11 +199,11 @@ For macOS / Linux users, the notes below are meant as a fallback guide and envir
 If you want the shortest first-time setup path, run these PowerShell commands in order:
 
 ```powershell
-git clone https://github.com/heyu-233/engineering-figure-banana $HOME/.codex/skills/engineering-figure-banana
-Copy-Item $HOME/.codex/skills/engineering-figure-banana/secrets/nanobanana.env.example $HOME/.codex/secrets/nanobanana.env
-Copy-Item $HOME/.codex/skills/engineering-figure-banana/secrets/nanobanana_api_key.txt.example $HOME/.codex/secrets/nanobanana_api_key.txt
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/install_and_test.ps1" -RunSetupCheck
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/check_setup.ps1"
+git clone https://github.com/heyu-233/engineering-figure-agent $HOME/.codex/skills/engineering-figure-agent
+Copy-Item $HOME/.codex/skills/engineering-figure-agent/secrets/nanobanana.env.example $HOME/.codex/secrets/nanobanana.env
+Copy-Item $HOME/.codex/skills/engineering-figure-agent/secrets/nanobanana_api_key.txt.example $HOME/.codex/secrets/nanobanana_api_key.txt
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/install_and_test.ps1" -RunSetupCheck
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/check_setup.ps1"
 ```
 
 Then:
@@ -236,11 +236,11 @@ In many cases, normal installation or AI-assisted setup is enough.
 If your environment still needs manual adjustment, the following steps are a reliable fallback:
 
 ```bash
-git clone https://github.com/heyu-233/engineering-figure-banana ~/.codex/skills/engineering-figure-banana
+git clone https://github.com/heyu-233/engineering-figure-agent ~/.codex/skills/engineering-figure-agent
 mkdir -p ~/.codex/secrets
-cp ~/.codex/skills/engineering-figure-banana/secrets/nanobanana.env.example ~/.codex/secrets/nanobanana.env
-cp ~/.codex/skills/engineering-figure-banana/secrets/nanobanana_api_key.txt.example ~/.codex/secrets/nanobanana_api_key.txt
-python3 -m pip install -r ~/.codex/skills/engineering-figure-banana/requirements.txt
+cp ~/.codex/skills/engineering-figure-agent/secrets/nanobanana.env.example ~/.codex/secrets/nanobanana.env
+cp ~/.codex/skills/engineering-figure-agent/secrets/nanobanana_api_key.txt.example ~/.codex/secrets/nanobanana_api_key.txt
+python3 -m pip install -r ~/.codex/skills/engineering-figure-agent/requirements.txt
 ```
 
 Then:
@@ -253,7 +253,7 @@ Then:
 Example:
 
 ```bash
-python3 ~/.codex/skills/engineering-figure-banana/scripts/generate_image.py \
+python3 ~/.codex/skills/engineering-figure-agent/scripts/generate_image.py \
   --figure-template system-architecture \
   --print-prompt \
   "A retrieval-augmented generation system with OCR, chunking, embedding, vector search, reranking, and answer synthesis."
@@ -273,7 +273,7 @@ Typical reasons you might still need small manual adjustments:
 ### 1. Put the repo in the Codex skill directory
 
 ```powershell
-$HOME/.codex/skills/engineering-figure-banana
+$HOME/.codex/skills/engineering-figure-agent
 ```
 
 ### 2. Configure local secrets
@@ -291,20 +291,20 @@ Templates are included here:
 ### 3. Run setup and dependency checks
 
 ```powershell
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/install_and_test.ps1" -RunSetupCheck
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/check_setup.ps1"
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/install_and_test.ps1" -RunSetupCheck
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/check_setup.ps1"
 ```
 
 ### 4. Load env vars
 
 ```powershell
-. "$HOME/.codex/skills/engineering-figure-banana/scripts/load_nanobanana_env.ps1"
+. "$HOME/.codex/skills/engineering-figure-agent/scripts/load_nanobanana_env.ps1"
 ```
 
 ### 5. Run a minimal image test
 
 ```powershell
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --figure-template system-architecture `
   --lang en `
   "A retrieval-augmented generation system with OCR, chunking, embedding, vector search, reranking, and answer synthesis."
@@ -354,15 +354,15 @@ You can verify recognition in several ways:
 
 Examples:
 
-- `Use engineering-figure-banana to create a system architecture prompt`
-- `Use engineering-figure-banana to build a benchmark bar chart`
+- `Use engineering-figure-agent to create a system architecture prompt`
+- `Use engineering-figure-agent to build a benchmark bar chart`
 
 If Codex responds using the skill workflow, recognition is working.
 
 ### Method 2: Run the setup script
 
 ```powershell
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/check_setup.ps1"
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/check_setup.ps1"
 ```
 
 This helps you confirm:
@@ -374,7 +374,7 @@ This helps you confirm:
 ### Method 3: Test the minimal prompt-building path
 
 ```powershell
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --figure-template system-architecture `
   --print-prompt `
   "A retrieval system with OCR, embedding, vector search, reranking, and answer synthesis."
@@ -418,7 +418,7 @@ If the final prompt prints correctly, the local script chain is already working.
 - run:
 
 ```powershell
-pip install -r "$HOME/.codex/skills/engineering-figure-banana/requirements.txt"
+pip install -r "$HOME/.codex/skills/engineering-figure-agent/requirements.txt"
 ```
 
 ## Example Gallery
@@ -453,9 +453,7 @@ Recommended doc strategy:
 
 ## Project Summary
 
-Engineering Figure Banana is an agent-native figure workflow for engineering and CS papers: image models for conceptual diagrams, local rendering for exact quantitative plots. It emphasizes controllable figure production, publication-oriented constraints, and exact quantitative rendering instead of treating every paper figure as the same generic image-generation problem.
-
-The repository name can stay as a recognizable historical name for now. If the project is renamed later, more provider-neutral names such as `engineering-figure-agent`, `engineering-figure-studio`, or `engineering-figure-router` would better match the expanded OpenAI plus Gemini backend design.
+Engineering Figure Agent is an agent-native figure workflow for engineering and CS papers: image models for conceptual diagrams, local rendering for exact quantitative plots. It emphasizes controllable figure production, publication-oriented constraints, and exact quantitative rendering instead of treating every paper figure as the same generic image-generation problem.
 
 ## Notes
 

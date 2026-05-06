@@ -1,6 +1,6 @@
 param(
     [string]$SecretsDir = "$HOME/.codex/secrets",
-    [string]$SkillDir = "$HOME/.codex/skills/engineering-figure-banana"
+    [string]$SkillDir = "$HOME/.codex/skills/engineering-figure-agent"
 )
 
 $ErrorActionPreference = "Continue"
@@ -31,7 +31,7 @@ $failed = $false
 $warned = $false
 $readyForPromptOnly = $false
 
-Write-Host "Engineering Figure Banana setup check"
+Write-Host "Engineering Figure Agent setup check"
 Write-Host "SkillDir   : $SkillDir"
 Write-Host "SecretsDir : $SecretsDir"
 Write-Host ""
@@ -47,7 +47,7 @@ if (Get-Command python -ErrorAction SilentlyContinue) {
 if (Test-Path $SkillDir) {
     Add-Result "PASS" "Skill directory exists" $null
 } else {
-    Add-Result "FAIL" "Skill directory missing: $SkillDir" "Run `& `"$HOME/.codex/skills/engineering-figure-banana/scripts/install_and_test.ps1`"` from the repo root or copy this skill into `$HOME/.codex/skills/engineering-figure-banana`."
+    Add-Result "FAIL" "Skill directory missing: $SkillDir" "Run `& `"$HOME/.codex/skills/engineering-figure-agent/scripts/install_and_test.ps1`"` from the repo root or copy this skill into `$HOME/.codex/skills/engineering-figure-agent`."
     $failed = $true
 }
 
@@ -64,7 +64,7 @@ foreach ($rel in $requiredFiles) {
     if (Test-Path $path) {
         Add-Result "PASS" "Found $rel" $null
     } else {
-        Add-Result "FAIL" "Missing $rel" "Reinstall or re-copy the skill so all required files exist under `$HOME/.codex/skills/engineering-figure-banana`."
+        Add-Result "FAIL" "Missing $rel" "Reinstall or re-copy the skill so all required files exist under `$HOME/.codex/skills/engineering-figure-agent`."
         $failed = $true
     }
 }
@@ -163,7 +163,7 @@ if (($envMap["ENGINEERING_FIGURE_IMAGE_PROVIDER"] -eq "openai") -or $envMap.Cont
 if ($env:NANOBANANA_BASE_URL) {
     Add-Result "PASS" "Current shell already has NANOBANANA_* values loaded" $null
 } else {
-    Add-Result "WARN" "Current shell does not appear to have NANOBANANA_* values loaded yet" "Run `. `"$HOME/.codex/skills/engineering-figure-banana/scripts/load_nanobanana_env.ps1`"` in this PowerShell session before generating."
+    Add-Result "WARN" "Current shell does not appear to have NANOBANANA_* values loaded yet" "Run `. `"$HOME/.codex/skills/engineering-figure-agent/scripts/load_nanobanana_env.ps1`"` in this PowerShell session before generating."
     $warned = $true
     $readyForPromptOnly = $true
 }
@@ -172,28 +172,28 @@ Write-Host ""
 Write-Host "Readiness summary" -ForegroundColor Cyan
 if ($failed) {
     Write-Host "Blocked until fixed" -ForegroundColor Red
-    Write-Host "Fix the FAIL items above first, then rerun:`n  & `"$HOME/.codex/skills/engineering-figure-banana/scripts/check_setup.ps1`"" -ForegroundColor Cyan
+    Write-Host "Fix the FAIL items above first, then rerun:`n  & `"$HOME/.codex/skills/engineering-figure-agent/scripts/check_setup.ps1`"" -ForegroundColor Cyan
     exit 1
 }
 
 if ($warned -and $readyForPromptOnly) {
     Write-Host "Ready for prompt-only testing" -ForegroundColor Yellow
     Write-Host "Next recommended commands:" -ForegroundColor Cyan
-    Write-Host "  . `"$HOME/.codex/skills/engineering-figure-banana/scripts/load_nanobanana_env.ps1`""
-    Write-Host "  & `"$HOME/.codex/skills/engineering-figure-banana/scripts/wizard.ps1`""
+    Write-Host "  . `"$HOME/.codex/skills/engineering-figure-agent/scripts/load_nanobanana_env.ps1`""
+    Write-Host "  & `"$HOME/.codex/skills/engineering-figure-agent/scripts/wizard.ps1`""
     exit 0
 }
 
 if ($warned) {
     Write-Host "Ready for minimal generation, but review the WARN items above" -ForegroundColor Yellow
     Write-Host "Next recommended commands:" -ForegroundColor Cyan
-    Write-Host "  & `"$HOME/.codex/skills/engineering-figure-banana/scripts/wizard.ps1`""
+    Write-Host "  & `"$HOME/.codex/skills/engineering-figure-agent/scripts/wizard.ps1`""
     Write-Host "  or run the minimal command from README.md"
     exit 0
 }
 
 Write-Host "Ready for minimal generation" -ForegroundColor Green
 Write-Host "Next recommended commands:" -ForegroundColor Cyan
-Write-Host "  & `"$HOME/.codex/skills/engineering-figure-banana/scripts/wizard.ps1`""
+Write-Host "  & `"$HOME/.codex/skills/engineering-figure-agent/scripts/wizard.ps1`""
 Write-Host "  or run the minimal command from README.md"
 exit 0

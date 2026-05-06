@@ -1,10 +1,10 @@
-# Engineering Figure Banana
+# Engineering Figure Agent
 
 [中文说明](./README.zh-CN.md) | [English Guide](./README.en.md)
 
-Engineering Figure Banana is not a general-purpose academic figure platform. It is an agent-native skill for engineering and CS paper figures, designed to split conceptual diagrams and exact quantitative plots into different workflows.
+Engineering Figure Agent is not a general-purpose academic figure platform. It is an agent-native skill for engineering and CS paper figures, designed to split conceptual diagrams and exact quantitative plots into different workflows.
 
-`engineering-figure-banana` 不是一个通用配图平台，而是一个面向 agent 工作流的工程论文配图 skill，专门把概念图和精确定量图分开处理。
+`engineering-figure-agent` 不是一个通用配图平台，而是一个面向 agent 工作流的工程论文配图 skill，专门把概念图和精确定量图分开处理。
 
 ## Why This Skill
 
@@ -48,7 +48,7 @@ This project is intentionally lighter than a full platform:
 Recommended upstream handoff:
 
 1. Use `ai-research-writing-guide` to decide what claim the figure should support
-2. Use `engineering-figure-banana` to render the final diagram or plot
+2. Use `engineering-figure-agent` to render the final diagram or plot
 
 ## Two Modes
 
@@ -68,14 +68,14 @@ Image mode can use either backend:
 
 ```powershell
 # Google Gemini / Banana-compatible backend
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --provider gemini `
   --figure-template system-architecture `
   --lang en `
   "A retrieval-augmented generation system with OCR, chunking, embedding, vector search, reranking, and answer synthesis."
 
 # OpenAI Image API backend
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --provider openai `
   --model gpt-image-1.5 `
   --figure-template system-architecture `
@@ -124,19 +124,19 @@ For installation-friendly details, start with:
 ## Quick Start
 
 ```powershell
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/install_and_test.ps1" -RunSetupCheck
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/install_and_test.ps1" -RunSetupCheck
 ```
 
 Then either:
 
 ```powershell
-& "$HOME/.codex/skills/engineering-figure-banana/scripts/wizard.ps1"
+& "$HOME/.codex/skills/engineering-figure-agent/scripts/wizard.ps1"
 ```
 
 or run a direct prompt test:
 
 ```powershell
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --figure-template system-architecture `
   --lang en `
   "A retrieval-augmented generation system with OCR, chunking, embedding, vector search, reranking, and answer synthesis."
@@ -144,9 +144,7 @@ python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py"
 
 ## Project Summary
 
-Engineering Figure Banana is an agent-native figure workflow for engineering and CS papers. It handles conceptual diagrams and exact publication plots with separate pipelines instead of treating paper figures as a single generic image-generation task.
-
-The historical repository name still fits the origin of the project, but the implementation is now moving toward a provider-neutral engineering-figure router. If the project is renamed later, good candidates are `engineering-figure-agent`, `engineering-figure-studio`, or `engineering-figure-router`.
+Engineering Figure Agent is an agent-native figure workflow for engineering and CS papers. It handles conceptual diagrams and exact publication plots with separate pipelines instead of treating paper figures as a single generic image-generation task.
 
 ## Notes
 

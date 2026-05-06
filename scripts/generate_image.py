@@ -81,7 +81,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=[],
         help="Input image path. Repeat to provide multiple reference images.",
     )
-    parser.add_argument("--out-dir", default="./output/nanobanana", help="Output directory.")
+    parser.add_argument("--out-dir", default="./output/engineering-figure", help="Output directory.")
     parser.add_argument("--prefix", default="nanobanana", help="Saved filename prefix.")
     parser.add_argument(
         "--base-url",
@@ -500,7 +500,7 @@ def request_openai_json(args: argparse.Namespace) -> dict:
     headers = {
         "Accept": "application/json",
         "Authorization": f"Bearer {api_key}",
-        "User-Agent": "engineering-figure-banana/1.0",
+        "User-Agent": "engineering-figure-agent/1.0",
     }
 
     if args.input_image:

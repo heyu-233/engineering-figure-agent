@@ -46,7 +46,7 @@ function parseArgs(argv) {
     lang: "",
     styleNote: "",
     inputImages: [],
-    outDir: "./output/nanobanana",
+    outDir: "./output/engineering-figure",
     prefix: "nanobanana",
     baseUrl: process.env.NANOBANANA_BASE_URL || "",
     model: DEFAULT_MODEL,

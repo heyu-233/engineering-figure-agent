@@ -8,7 +8,7 @@ $ErrorActionPreference = "Stop"
 
 $skillsDir = Join-Path $CodexHome "skills"
 $secretsDir = Join-Path $CodexHome "secrets"
-$targetSkillDir = Join-Path $skillsDir "engineering-figure-banana"
+$targetSkillDir = Join-Path $skillsDir "engineering-figure-agent"
 $envTemplate = Join-Path $SourceDir "secrets/nanobanana.env.example"
 $keyTemplate = Join-Path $SourceDir "secrets/nanobanana_api_key.txt.example"
 $openaiKeyTemplate = Join-Path $SourceDir "secrets/openai_api_key.txt.example"
@@ -17,7 +17,7 @@ $keyTarget = Join-Path $secretsDir "nanobanana_api_key.txt"
 $openaiKeyTarget = Join-Path $secretsDir "openai_api_key.txt"
 $checkScript = Join-Path $targetSkillDir "scripts/check_setup.ps1"
 
-Write-Host "Installing Engineering Figure Banana" -ForegroundColor Cyan
+Write-Host "Installing Engineering Figure Agent" -ForegroundColor Cyan
 Write-Host "Source      : $SourceDir"
 Write-Host "Target skill: $targetSkillDir"
 Write-Host "Secrets dir : $secretsDir"

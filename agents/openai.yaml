@@ -1,7 +1,7 @@
 interface:
-  display_name: "Engineering Figure Banana"
+  display_name: "Engineering Figure Agent"
   short_description: "CS and engineering figures via Gemini"
-  default_prompt: "Use $engineering-figure-banana for computer science, electronics, algorithm, or engineering paper figures and exact plots. Configure NANOBANANA_API_KEY and NANOBANANA_BASE_URL before image generation."
+  default_prompt: "Use $engineering-figure-agent for computer science, electronics, algorithm, or engineering paper figures and exact plots. Configure NANOBANANA_API_KEY and NANOBANANA_BASE_URL before image generation."
 
 policy:
   allow_implicit_invocation: true

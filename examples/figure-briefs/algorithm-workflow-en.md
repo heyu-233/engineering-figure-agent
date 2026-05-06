@@ -30,7 +30,7 @@ Explain the full algorithm path, decision points, loopbacks, and outputs.
 
 ## Recommended Command
 ```powershell
-python "$HOME/.codex/skills/engineering-figure-banana/scripts/generate_image.py" `
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
   --figure-template algorithm-workflow `
   --lang en `
   "[paste your method workflow background here]"
