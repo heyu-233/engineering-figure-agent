@@ -156,6 +156,41 @@ python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" 
 
 OpenAI 路径使用 `OPENAI_API_KEY` 或 `OPENAI_API_KEY_FILE`；原来的 Google Gemini / Banana 兼容路径继续使用 `NANOBANANA_*` 配置。
 
+## OpenAI / ChatGPT Image 后端
+
+Engineering Figure Agent 现在可以把 OpenAI 图像生成 API 作为 `image mode` 的一个后端。这里接入的是 ChatGPT Image 风格能力对应的 API 路径，不是自动操作 ChatGPT 网页端。
+
+适合用它生成概念类工程图、系统架构图、graphical abstract、算法流程图、工作流示意图，以及基于参考图的编辑：
+
+```powershell
+$env:OPENAI_API_KEY="your-openai-api-key"
+
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
+  --provider openai `
+  --model gpt-image-1.5 `
+  --figure-template system-architecture `
+  --lang zh `
+  --openai-quality auto `
+  --openai-size auto `
+  "一个包含 OCR、切分、嵌入、向量检索、重排序和答案生成的 RAG 系统。"
+```
+
+也可以用 key 文件配置：
+
+```env
+OPENAI_API_KEY_FILE=$HOME/.codex/secrets/openai_api_key.txt
+OPENAI_IMAGE_MODEL=gpt-image-1.5
+OPENAI_IMAGE_QUALITY=auto
+OPENAI_IMAGE_SIZE=auto
+OPENAI_IMAGE_OUTPUT_FORMAT=png
+```
+
+后端选择规则：
+
+- `--provider openai`：使用 OpenAI / ChatGPT Image 风格的概念图生成
+- `--provider gemini` 或 `--provider banana`：使用 Google Gemini / Banana 兼容生图
+- `plot mode`：继续用于本地精确定量绘图；涉及数值、坐标轴、benchmark 几何关系时，不要交给图像模型
+
 ### `plot mode`
 
 适合：

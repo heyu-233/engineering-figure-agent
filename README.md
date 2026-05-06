@@ -85,6 +85,41 @@ python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" 
 
 OpenAI configuration uses `OPENAI_API_KEY` or `OPENAI_API_KEY_FILE`. Gemini/Banana configuration continues to use the existing `NANOBANANA_*` variables.
 
+## OpenAI / ChatGPT Image Backend
+
+Engineering Figure Agent can use OpenAI's image generation API as an image-mode backend. This is the API-side path for ChatGPT-style image generation, not automation of the ChatGPT web UI.
+
+Use it for conceptual engineering figures, architecture diagrams, graphical abstracts, workflow schematics, and reference-image edits:
+
+```powershell
+$env:OPENAI_API_KEY="your-openai-api-key"
+
+python "$HOME/.codex/skills/engineering-figure-agent/scripts/generate_image.py" `
+  --provider openai `
+  --model gpt-image-1.5 `
+  --figure-template system-architecture `
+  --lang en `
+  --openai-quality auto `
+  --openai-size auto `
+  "A retrieval-augmented generation system with OCR, chunking, embedding, vector search, reranking, and answer synthesis."
+```
+
+Or configure the key through a file:
+
+```env
+OPENAI_API_KEY_FILE=$HOME/.codex/secrets/openai_api_key.txt
+OPENAI_IMAGE_MODEL=gpt-image-1.5
+OPENAI_IMAGE_QUALITY=auto
+OPENAI_IMAGE_SIZE=auto
+OPENAI_IMAGE_OUTPUT_FORMAT=png
+```
+
+Provider selection:
+
+- `--provider openai`: OpenAI / ChatGPT Image-style conceptual figure generation
+- `--provider gemini` or `--provider banana`: Google Gemini / Banana-compatible generation
+- `plot mode`: local exact plotting for numeric figures; do not use image generation for values, axes, or benchmark geometry
+
 ### `plot mode`
 
 Best for:
