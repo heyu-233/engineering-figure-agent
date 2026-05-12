@@ -1,27 +1,41 @@
-# Example Outputs
+# Example Gallery
 
-This folder contains repository-safe public examples that show the visual direction of the project.
+This gallery shows the intended visual direction of Engineering Figure Agent. Each showcase item links the output image with its figure brief and prompt or plot request.
 
-## Included Examples
+## System Architecture / Dense Overview
 
-- `linux-kernel-system-1.jpg` - detailed English architecture figure example
-- `federated-open-vocab-driving-2k-1.png` - dense autonomous-driving overview redesigned with a new multi-city collaboration layout
-- `cooperative-object-tracking-2k-1.png` - cooperative perception and tracking pipeline reorganized into a new modern flow
-- `multi-agent-safety-overview-2k-1.png` - taxonomy-style LLM agent safety overview with a newly designed hierarchy
-- `health-monitoring-early-warning-reference.jpg` - supplementary user-provided reference example showing a dense deployment-scenario composition for health monitoring and safety-warning systems
+| Output | Brief | Source |
+|---|---|---|
+| ![Federated open-vocabulary driving](federated-open-vocab-driving-2k-1.png) | [brief](briefs/federated-open-vocab-driving.md) | [prompt](federated-open-vocab-driving-prompt.txt) |
+| ![Linux kernel system diagram](linux-kernel-system-1.jpg) | [brief](briefs/linux-kernel-system.md) | [prompt](linux-kernel-system-diagram-prompt.txt) |
 
-## Source Files
+## Algorithm / Cooperative Workflow
 
-- `linux-kernel-system-diagram-prompt.txt` - original prompt for the Linux kernel example
-- `federated-open-vocab-driving-prompt.txt` - prompt for a reference-inspired but newly arranged autonomous-driving overview
-- `cooperative-object-tracking-prompt.txt` - prompt for a reference-inspired cooperative perception and tracking redesign
-- `multi-agent-safety-overview-prompt.txt` - prompt for a reference-inspired multi-agent safety taxonomy overview
-- `health-monitoring-early-warning-note.txt` - note describing the supplementary reference image and how it should be interpreted in the gallery
+| Output | Brief | Source |
+|---|---|---|
+| ![Cooperative object tracking](cooperative-object-tracking-2k-1.png) | [brief](briefs/cooperative-object-tracking.md) | [prompt](cooperative-object-tracking-prompt.txt) |
 
-Notes:
+## Taxonomy / Safety Overview
 
-- the three new `*-2k-1.png` examples were produced through the high-resolution model path
-- they are intended to look substantially closer to modern paper figures than the older lightweight placeholder examples
-- they are not meant to copy the original reference layouts; they use the references only for visual ambition, complexity, and domain style
-- the previous lightweight showcase files were removed because they were not good enough for public presentation
-- `health-monitoring-early-warning-reference.jpg` is included as a supplementary reference image, not as a claim that the repository generated that exact output automatically
+| Output | Brief | Source |
+|---|---|---|
+| ![Multi-agent safety overview](multi-agent-safety-overview-2k-1.png) | [brief](briefs/multi-agent-safety-overview.md) | [prompt](multi-agent-safety-overview-prompt.txt) |
+
+## Exact Local Plot
+
+| Output | Brief | Source |
+|---|---|---|
+| ![Benchmark plot](benchmark-plot.png) | [brief](briefs/benchmark-plot.md) | [plot request](benchmark-plot-request.json) |
+
+## Reference Redraw / Inspiration
+
+| Output | Brief | Source |
+|---|---|---|
+| ![Health monitoring reference](health-monitoring-early-warning-reference.jpg) | [brief](briefs/health-monitoring-early-warning.md) | [note](health-monitoring-early-warning-note.txt) |
+
+## Notes
+
+- The `*-2k-1.png` examples were produced through a high-resolution image-generation path.
+- The benchmark plot is rendered locally from exact JSON values.
+- The health-monitoring image is a supplementary reference image; do not treat it as an automatically generated repository output unless a full generation path is provided.
+- All examples should be checked for label readability, scientific faithfulness, and publication fit before reuse.

@@ -5,7 +5,7 @@ Use this reference when the user needs exact plotting from data rather than prom
 The deterministic entrypoint is:
 
 ```bash
-python3 skills/nanobanana-image-generation/scripts/plot_publication_figure.py spec.json
+python3 scripts/plot_publication_figure.py spec.json
 ```
 
 It renders publication-style figures from a JSON spec and exports exact PNG, PDF, or SVG outputs.
@@ -28,7 +28,7 @@ Do not use this mode for:
 - mechanism diagrams
 - device illustrations without underlying numeric data
 
-For those, use Nanobanana generation mode instead.
+For those, use image mode instead.
 
 ## Top-Level Spec Shape
 
@@ -39,7 +39,7 @@ For those, use Nanobanana generation mode instead.
     "font_size": 16,
     "axes_linewidth": 2.5,
     "use_tex": false,
-    "font_family": ["DejaVu Sans", "Helvetica", "Arial", "sans-serif"]
+    "font_family": ["DejaVu Sans", "sans-serif"]
   },
   "layout": {
     "nrows": 1,
@@ -191,6 +191,22 @@ Useful options:
 }
 ```
 
+Multi-series scatter is also supported and is the preferred form for method comparisons:
+
+```json
+{
+  "type": "scatter",
+  "title": "Latency vs Accuracy",
+  "xlabel": "Latency (ms)",
+  "ylabel": "Accuracy",
+  "series": [
+    {"label": "Ours", "x": [24], "y": [0.93], "color": "blue_main"},
+    {"label": "Baseline", "x": [39], "y": [0.83], "color": "red_strong"}
+  ],
+  "legend": true
+}
+```
+
 ## Legend Panel
 
 Use a dedicated subplot for the legend when the data panels are dense.
@@ -237,7 +253,7 @@ output/plots/<spec-file-stem>.svg
 Override it with:
 
 ```bash
-python3 skills/nanobanana-image-generation/scripts/plot_publication_figure.py spec.json \
+python3 scripts/plot_publication_figure.py spec.json \
   --out-path output/plots/my_figure \
   --formats png pdf svg \
   --dpi 300
@@ -248,7 +264,7 @@ python3 skills/nanobanana-image-generation/scripts/plot_publication_figure.py sp
 For Codex-facing natural-language workflows, a lighter request JSON can be expanded into a full spec:
 
 ```bash
-python3 skills/nanobanana-image-generation/scripts/build_plot_spec.py request.json --out spec.json
+python3 scripts/build_plot_spec.py request.json --out spec.json
 ```
 
 This is mainly for Codex's internal use after interpreting a user's natural-language plotting request. See [natural-language-plot-workflow.md](natural-language-plot-workflow.md).

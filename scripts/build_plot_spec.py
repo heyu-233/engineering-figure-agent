@@ -20,7 +20,7 @@ DEFAULT_STYLE = {
     "font_size": 16,
     "axes_linewidth": 2.5,
     "use_tex": False,
-    "font_family": ["DejaVu Sans", "Helvetica", "Arial", "sans-serif"],
+    "font_family": ["DejaVu Sans", "sans-serif"],
 }
 
 
@@ -125,20 +125,40 @@ def build_heatmap_panel(panel: dict) -> dict:
 
 def build_scatter_panel(panel: dict) -> dict:
     data = panel["data"]
-    return {
+    common = {
         "type": "scatter",
         "title": panel.get("title"),
-        "x": data["x"],
-        "y": data["y"],
-        "label": panel.get("label"),
-        "color": panel.get("color", "blue_main"),
         "xlabel": panel.get("xlabel"),
         "ylabel": panel.get("ylabel"),
-        "size": panel.get("size", 50),
-        "alpha": panel.get("alpha", 0.7),
-        "legend": panel.get("legend", False),
+        "legend": panel.get("legend", True if "series" in data else False),
         "legend_loc": panel.get("legend_loc", "best"),
         "grid": panel.get("grid", False),
+    }
+    if "series" in data:
+        colors_map = panel.get("colors", {})
+        series = []
+        for item in data["series"]:
+            label = item.get("label")
+            series.append(
+                {
+                    "label": label,
+                    "x": item["x"],
+                    "y": item["y"],
+                    "color": item.get("color") or colors_map.get(label) or "blue_main",
+                    "size": item.get("size", panel.get("size", 50)),
+                    "alpha": item.get("alpha", panel.get("alpha", 0.7)),
+                }
+            )
+        return {**common, "series": series}
+
+    return {
+        **common,
+        "x": data["x"],
+        "y": data["y"],
+        "label": panel.get("label") or data.get("label"),
+        "color": panel.get("color") or data.get("color") or "blue_main",
+        "size": panel.get("size", 50),
+        "alpha": panel.get("alpha", 0.7),
     }
 
 

@@ -1,0 +1,29 @@
+{
+  "figure_goal": "",
+  "paper_claim": "",
+  "figure_type": "system-architecture",
+  "mode": "image",
+  "panels": [
+    {
+      "name": "A",
+      "purpose": "",
+      "content": "",
+      "evidence_or_data": ""
+    }
+  ],
+  "must_keep_labels": [],
+  "data": {
+    "not_applicable": true
+  },
+  "style_constraints": [
+    "white background",
+    "publication style",
+    "short readable labels"
+  ],
+  "output_formats": ["png"],
+  "verification_checklist": [
+    "The figure supports the stated paper claim.",
+    "All labels are readable at intended paper size.",
+    "No unsupported numeric or scientific claims are shown."
+  ]
+}

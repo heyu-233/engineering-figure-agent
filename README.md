@@ -12,7 +12,7 @@
 
 把工程论文里的系统架构图、算法流程图、实验曲线和多面板图，拆成可控的生成流程：概念图走 image mode，精确数值图走 plot mode。
 
-[中文说明](./README.zh-CN.md) | [English Guide](./README.en.md) | [Example Gallery](./docs/examples/README.md)
+[中文说明](./README.zh-CN.md) | [English Guide](./README.en.md) | [Example Gallery](./docs/examples/README.md) | [Showcase](./docs/showcase.md)
 
 </div>
 
@@ -25,6 +25,10 @@
 | Dense Systems Diagram | Deployment Scenario |
 |---|---|
 | ![Linux kernel system diagram](docs/examples/linux-kernel-system-1.jpg) | ![Health monitoring and early warning deployment scenarios](docs/examples/health-monitoring-early-warning-reference.jpg) |
+
+| Exact Local Plot |
+|---|
+| ![Benchmark plot](docs/examples/benchmark-plot.png) |
 
 ## Why It Exists
 
@@ -131,6 +135,21 @@ Recommended upstream handoff:
 3. Use `engineering-figure-agent` to render the diagram or exact plot.
 4. Verify labels, numeric truth, publication style, and export format before paper submission.
 
+## Platform Adapters
+
+| Platform | Entry | Best use |
+|---|---|---|
+| Codex | [SKILL.md](./SKILL.md) | Full agent-native workflow with local scripts |
+| Claude Code | [adapters/claude-code/](./adapters/claude-code/) | Local repository figure work and prompt/plot generation |
+| ChatGPT / Claude web | [docs/prompt-pack.md](./docs/prompt-pack.md) | Chat-only figure brief and prompt drafting |
+| VS Code / Obsidian | [templates/figure-brief/](./templates/figure-brief/) | Edit and archive figure briefs, prompts, and plot requests |
+
+Core platform-neutral contracts:
+
+- [Figure brief spec](./docs/figure-brief-spec.md)
+- [Plot request schema](./schemas/plot-request.schema.json)
+- [Figure brief schema](./schemas/figure-brief.schema.json)
+
 ## Support Matrix
 
 | Platform | Status | Notes |
@@ -149,6 +168,8 @@ Recommended upstream handoff:
 | [scripts/](./scripts/) | Image generation, plotting, setup checks, wizard scripts |
 | [examples/figure-briefs/](./examples/figure-briefs/) | Reusable figure brief examples |
 | [docs/examples/](./docs/examples/) | Showcase images, prompts, and notes |
+| [templates/figure-brief/](./templates/figure-brief/) | Platform-neutral figure brief templates |
+| [adapters/](./adapters/) | Claude Code and future platform adapters |
 
 ## What It Is Not
 

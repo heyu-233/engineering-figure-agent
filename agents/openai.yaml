@@ -1,7 +1,7 @@
 interface:
   display_name: "Engineering Figure Agent"
-  short_description: "CS and engineering figures via Gemini"
-  default_prompt: "Use $engineering-figure-agent for computer science, electronics, algorithm, or engineering paper figures and exact plots. Configure NANOBANANA_API_KEY and NANOBANANA_BASE_URL before image generation."
+  short_description: "Provider-neutral engineering figures and exact plots."
+  default_prompt: "Use $engineering-figure-agent to create a provider-neutral engineering paper figure workflow: start from a figure brief, choose image or exact plot mode, preserve numeric truth, and generate the prompt, plot request, or rendered output."
 
 policy:
   allow_implicit_invocation: true

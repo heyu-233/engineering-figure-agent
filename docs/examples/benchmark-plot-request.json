@@ -1,0 +1,43 @@
+{
+  "suptitle": "Ablation and Efficiency Summary",
+  "layout": {
+    "nrows": 1,
+    "ncols": 2,
+    "figsize": [12, 5]
+  },
+  "panels": [
+    {
+      "kind": "bar",
+      "title": "Main Metrics",
+      "ylabel": "Score",
+      "ylim": [0.7, 1.0],
+      "annotate": true,
+      "data": {
+        "categories": ["AUC", "F1", "Recall", "Precision"],
+        "series": {
+          "Ours": [0.93, 0.89, 0.88, 0.91],
+          "Baseline A": [0.88, 0.84, 0.86, 0.85],
+          "Baseline B": [0.83, 0.81, 0.80, 0.82]
+        }
+      },
+      "colors": {
+        "Ours": "blue_main",
+        "Baseline A": "green_3",
+        "Baseline B": "red_strong"
+      }
+    },
+    {
+      "kind": "scatter",
+      "title": "Latency vs Accuracy",
+      "xlabel": "Latency (ms)",
+      "ylabel": "Accuracy",
+      "data": {
+        "series": [
+          {"label": "Ours", "x": [24], "y": [0.93], "color": "blue_main"},
+          {"label": "Baseline A", "x": [31], "y": [0.88], "color": "green_3"},
+          {"label": "Baseline B", "x": [39], "y": [0.83], "color": "red_strong"}
+        ]
+      }
+    }
+  ]
+}

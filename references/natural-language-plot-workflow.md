@@ -45,6 +45,7 @@ From the user's natural-language request, infer:
   - baseline or contrast -> red
 - whether a shared legend panel is needed
 - export formats if specified
+- for method-comparison scatter plots, prefer `data.series[]` with one object per method
 
 If exact numeric data is missing, do not pretend the output is exact.
 
@@ -132,6 +133,17 @@ Internal interpretation:
 - layout: `1x3`
 - panels 0 and 1: `trend`
 - panel 2: `legend`
+
+Request:
+
+"做一个 latency vs accuracy 散点图，对比 Ours、Baseline A、Baseline B。"
+
+Internal interpretation:
+
+- mode: `plot`
+- panel type: `scatter`
+- use `data.series[]`
+- each method gets its own `label`, `x`, `y`, and semantic color
 
 ## Decision Boundary
 

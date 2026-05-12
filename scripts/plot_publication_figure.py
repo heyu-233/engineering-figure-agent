@@ -51,7 +51,7 @@ class FigureStyle:
     font_size: int = 16
     axes_linewidth: float = 2.5
     use_tex: bool = False
-    font_family: tuple[str, ...] = ("DejaVu Sans", "Helvetica", "Arial", "sans-serif")
+    font_family: tuple[str, ...] = ("DejaVu Sans", "sans-serif")
 
 
 def apply_publication_style(style: FigureStyle) -> None:
@@ -274,6 +274,29 @@ def render_heatmap(ax: plt.Axes, panel: dict, fig: plt.Figure) -> None:
 
 
 def render_scatter(ax: plt.Axes, panel: dict) -> None:
+    if "series" in panel:
+        has_label = False
+        for idx, item in enumerate(panel["series"]):
+            x = coerce_1d(item["x"], f"series[{idx}].x")
+            y = coerce_1d(item["y"], f"series[{idx}].y")
+            if len(x) != len(y):
+                raise SystemExit("Scatter x and y must match length.")
+            label = item.get("label")
+            has_label = has_label or bool(label)
+            ax.scatter(
+                x,
+                y,
+                label=label,
+                color=resolve_color(item.get("color"), idx),
+                s=float(item.get("size", panel.get("size", 50))),
+                alpha=float(item.get("alpha", panel.get("alpha", 0.7))),
+                edgecolors=item.get("edgecolors", panel.get("edgecolors")),
+                linewidths=float(item.get("linewidths", panel.get("linewidths", 0.0))),
+            )
+        if panel.get("legend", True) and has_label:
+            ax.legend(loc=panel.get("legend_loc", "best"), ncol=panel.get("legend_ncol", 1))
+        return
+
     x = coerce_1d(panel["x"], "x")
     y = coerce_1d(panel["y"], "y")
     if len(x) != len(y):

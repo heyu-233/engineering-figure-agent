@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Engineering Figure Plot Request",
+  "type": "object",
+  "required": ["panels"],
+  "properties": {
+    "suptitle": {"type": "string"},
+    "layout": {
+      "type": "object",
+      "properties": {
+        "nrows": {"type": "integer", "minimum": 1},
+        "ncols": {"type": "integer", "minimum": 1},
+        "figsize": {
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 2,
+          "maxItems": 2
+        }
+      },
+      "additionalProperties": true
+    },
+    "style": {"type": "object"},
+    "panels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["bar", "trend", "heatmap", "scatter", "legend", "empty"]
+          },
+          "title": {"type": "string"},
+          "xlabel": {"type": "string"},
+          "ylabel": {"type": "string"},
+          "data": {"type": "object"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

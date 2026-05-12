@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Engineering Figure Brief",
+  "type": "object",
+  "required": [
+    "figure_goal",
+    "paper_claim",
+    "figure_type",
+    "mode",
+    "panels",
+    "must_keep_labels",
+    "data",
+    "style_constraints",
+    "output_formats",
+    "verification_checklist"
+  ],
+  "properties": {
+    "figure_goal": {"type": "string"},
+    "paper_claim": {"type": "string"},
+    "figure_type": {"type": "string"},
+    "mode": {"type": "string", "enum": ["image", "plot", "mixed"]},
+    "panels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "content"],
+        "properties": {
+          "name": {"type": "string"},
+          "purpose": {"type": "string"},
+          "content": {"type": "string"},
+          "evidence_or_data": {}
+        },
+        "additionalProperties": true
+      }
+    },
+    "must_keep_labels": {"type": "array", "items": {"type": "string"}},
+    "data": {"type": "object"},
+    "style_constraints": {"type": "array", "items": {"type": "string"}},
+    "output_formats": {"type": "array", "items": {"type": "string"}},
+    "verification_checklist": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}
