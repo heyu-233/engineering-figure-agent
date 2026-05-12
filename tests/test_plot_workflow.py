@@ -26,8 +26,14 @@ def test_benchmark_request_builds_and_renders(tmp_path):
         capture_output=True,
     )
     spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    assert spec["layout"]["width_ratios"] == [1, 1, 0.32]
+    assert spec["panels"][0]["legend"] is False
     assert "series" in spec["panels"][1]
     assert spec["panels"][1]["series"][0]["label"] == "Ours"
+    assert spec["panels"][1]["xlim"] == [22, 41]
+    assert spec["panels"][1]["xticks"] == [25, 30, 35, 40]
+    assert spec["panels"][1]["legend"] is False
+    assert spec["panels"][2]["type"] == "legend"
 
     subprocess.run(
         [
@@ -72,3 +78,37 @@ def test_single_scatter_request_remains_supported(tmp_path):
     panel = json.loads(spec_path.read_text(encoding="utf-8"))["panels"][0]
     assert panel["x"] == [1, 2]
     assert panel["y"] == [0.8, 0.9]
+
+
+def test_annotated_grouped_bar_defaults_to_outside_legend(tmp_path):
+    request = {
+        "panels": [
+            {
+                "kind": "bar",
+                "title": "Dense Bar",
+                "annotate": True,
+                "data": {
+                    "categories": ["AUC", "F1"],
+                    "series": {
+                        "Ours": [0.92, 0.88],
+                        "Baseline": [0.85, 0.82],
+                    },
+                },
+            }
+        ]
+    }
+    request_path = tmp_path / "request.json"
+    spec_path = tmp_path / "spec.json"
+    request_path.write_text(json.dumps(request), encoding="utf-8")
+
+    subprocess.run(
+        [sys.executable, "scripts/build_plot_spec.py", str(request_path), "--out", str(spec_path)],
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+    panel = json.loads(spec_path.read_text(encoding="utf-8"))["panels"][0]
+    assert panel["legend"] is True
+    assert panel["legend_outside"] is True
+    assert panel["legend_loc"] == "upper center"
+    assert panel["legend_ncol"] == 2

@@ -45,6 +45,7 @@ For those, use image mode instead.
     "nrows": 1,
     "ncols": 2,
     "figsize": [14, 5],
+    "width_ratios": [1, 1],
     "tight_layout_pad": 2.0
   },
   "panels": [
@@ -113,11 +114,16 @@ Useful options:
 - `legend`
 - `legend_loc`
 - `legend_ncol`
+- `legend_outside`
+- `legend_bbox_to_anchor`
 - `annotate`
 - `annotate_fmt`
+- `annotate_headroom`
 - `hatches`
 - `hide_xticks`
 - `bar_group_width`
+
+For dense grouped bars with value annotations, avoid an internal legend. Prefer a dedicated `legend` panel, or set `legend_outside: true` with an explicit `legend_bbox_to_anchor`. The concise request builder defaults annotated multi-series bars to an outside legend because `legend_loc: "best"` can overlap custom bar annotations.
 
 ## Trend Panel
 
@@ -147,6 +153,8 @@ Useful options:
 - `shadow_alpha`
 - `legend`
 - `legend_loc`
+- `legend_outside`
+- `legend_bbox_to_anchor`
 
 ## Heatmap Panel
 
@@ -203,9 +211,18 @@ Multi-series scatter is also supported and is the preferred form for method comp
     {"label": "Ours", "x": [24], "y": [0.93], "color": "blue_main"},
     {"label": "Baseline", "x": [39], "y": [0.83], "color": "red_strong"}
   ],
-  "legend": true
+  "legend": true,
+  "legend_ncol": 2
 }
 ```
+
+Useful options:
+
+- `legend`
+- `legend_loc`
+- `legend_ncol`
+- `legend_outside`
+- `legend_bbox_to_anchor`
 
 ## Legend Panel
 

@@ -46,6 +46,7 @@ From the user's natural-language request, infer:
 - whether a shared legend panel is needed
 - export formats if specified
 - for method-comparison scatter plots, prefer `data.series[]` with one object per method
+- for dense grouped bars with value labels, avoid internal legends; use a dedicated `legend` panel or an explicit outside legend
 
 If exact numeric data is missing, do not pretend the output is exact.
 
@@ -62,8 +63,8 @@ For simple plots:
 2. Run:
 
 ```bash
-python3 skills/nanobanana-image-generation/scripts/build_plot_spec.py request.json --out spec.json
-python3 skills/nanobanana-image-generation/scripts/plot_publication_figure.py spec.json
+python3 scripts/build_plot_spec.py request.json --out spec.json
+python3 scripts/plot_publication_figure.py spec.json
 ```
 
 For more custom layouts:
@@ -81,7 +82,8 @@ The concise request format is easier for Codex to author from natural language t
   "layout": {
     "nrows": 1,
     "ncols": 2,
-    "figsize": [12, 4.5]
+    "figsize": [12, 4.5],
+    "width_ratios": [1, 0.28]
   },
   "panels": [
     {
@@ -89,6 +91,7 @@ The concise request format is easier for Codex to author from natural language t
       "title": "Method Comparison",
       "ylabel": "Score",
       "annotate": true,
+      "legend": false,
       "data": {
         "categories": ["AUC", "F1", "Recall"],
         "series": {
@@ -113,7 +116,7 @@ The concise request format is easier for Codex to author from natural language t
 
 Request:
 
-"画一个方法对比柱状图，横轴是 AUC、F1、Recall，ours 用蓝色，baseline 用红色，把数值标在柱子上。"
+"画一个方法对比柱状图，横轴是 AUC、F1、Recall，Ours 用蓝色，Baseline 用红色，把数值标在柱子上。"
 
 Internal interpretation:
 
@@ -122,6 +125,7 @@ Internal interpretation:
 - categories: `AUC`, `F1`, `Recall`
 - colors: `blue_main`, `red_strong`
 - annotate bars: `true`
+- layout: avoid an internal legend when annotations are present
 
 Request:
 

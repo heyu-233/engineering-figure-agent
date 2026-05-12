@@ -24,6 +24,18 @@ DEFAULT_STYLE = {
 }
 
 
+AXIS_OPTION_KEYS = (
+    "xlim",
+    "ylim",
+    "xticks",
+    "yticks",
+    "xticklabels",
+    "yticklabels",
+    "hide_xticks",
+    "hide_yticks",
+)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build a full plot spec from a concise request JSON.")
     parser.add_argument("request_file", nargs="?", help="Path to the concise request JSON.")
@@ -53,11 +65,16 @@ def merge_layout(layout: dict | None, panel_count: int) -> dict:
     return result
 
 
+def default_legend_ncol(labels: list[str]) -> int:
+    return min(max(len(labels), 1), 3)
+
+
 def build_bar_panel(panel: dict) -> dict:
     data = panel["data"]
     series_map = data["series"]
     labels = list(series_map.keys())
     colors_map = panel.get("colors", {})
+    legend_outside = panel.get("legend_outside", panel.get("annotate", False) and len(labels) > 1)
     return {
         "type": "bar",
         "title": panel.get("title"),
@@ -69,9 +86,15 @@ def build_bar_panel(panel: dict) -> dict:
         "ylabel": panel.get("ylabel", "Value"),
         "ylim": panel.get("ylim"),
         "annotate": panel.get("annotate", False),
+        "annotate_fontsize": panel.get("annotate_fontsize"),
+        "annotate_padding": panel.get("annotate_padding"),
+        "annotate_fmt": panel.get("annotate_fmt"),
         "legend": panel.get("legend", True),
-        "legend_loc": panel.get("legend_loc", "best"),
-        "legend_ncol": panel.get("legend_ncol", 1),
+        "legend_outside": legend_outside,
+        "legend_loc": panel.get("legend_loc", "upper center" if legend_outside else "best"),
+        "legend_bbox_to_anchor": panel.get("legend_bbox_to_anchor", [0.5, 1.18] if legend_outside else None),
+        "legend_ncol": panel.get("legend_ncol", default_legend_ncol(labels)),
+        "annotate_headroom": panel.get("annotate_headroom", 0.08),
         "xtick_rotation": panel.get("xtick_rotation", 0),
         "hatches": panel.get("hatches"),
         "grid": panel.get("grid", False),
@@ -95,7 +118,9 @@ def build_trend_panel(panel: dict) -> dict:
         "ylabel": panel.get("ylabel", "Value"),
         "legend": panel.get("legend", True),
         "legend_loc": panel.get("legend_loc", "best"),
-        "legend_ncol": panel.get("legend_ncol", 1),
+        "legend_outside": panel.get("legend_outside", False),
+        "legend_bbox_to_anchor": panel.get("legend_bbox_to_anchor"),
+        "legend_ncol": panel.get("legend_ncol", default_legend_ncol(labels)),
         "ylim": panel.get("ylim"),
         "grid": panel.get("grid", False),
     }
@@ -132,6 +157,9 @@ def build_scatter_panel(panel: dict) -> dict:
         "ylabel": panel.get("ylabel"),
         "legend": panel.get("legend", True if "series" in data else False),
         "legend_loc": panel.get("legend_loc", "best"),
+        "legend_outside": panel.get("legend_outside", False),
+        "legend_bbox_to_anchor": panel.get("legend_bbox_to_anchor"),
+        "legend_ncol": panel.get("legend_ncol", 1),
         "grid": panel.get("grid", False),
     }
     if "series" in data:
@@ -188,6 +216,9 @@ def normalize_panel(panel: dict) -> dict:
     if kind not in builders:
         raise SystemExit(f"Unsupported request panel kind: {kind}")
     normalized = builders[kind](panel)
+    for key in AXIS_OPTION_KEYS:
+        if key in panel and key not in normalized:
+            normalized[key] = panel[key]
     return {key: value for key, value in normalized.items() if value is not None}
 
 

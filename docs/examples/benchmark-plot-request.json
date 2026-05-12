@@ -1,9 +1,14 @@
 {
   "suptitle": "Ablation and Efficiency Summary",
+  "style": {
+    "font_size": 12,
+    "axes_linewidth": 2.0
+  },
   "layout": {
     "nrows": 1,
-    "ncols": 2,
-    "figsize": [12, 5]
+    "ncols": 3,
+    "figsize": [14, 5],
+    "width_ratios": [1, 1, 0.32]
   },
   "panels": [
     {
@@ -12,6 +17,8 @@
       "ylabel": "Score",
       "ylim": [0.7, 1.0],
       "annotate": true,
+      "annotate_fontsize": 8,
+      "legend": false,
       "data": {
         "categories": ["AUC", "F1", "Recall", "Precision"],
         "series": {
@@ -31,6 +38,10 @@
       "title": "Latency vs Accuracy",
       "xlabel": "Latency (ms)",
       "ylabel": "Accuracy",
+      "xlim": [22, 41],
+      "ylim": [0.82, 0.94],
+      "xticks": [25, 30, 35, 40],
+      "legend": false,
       "data": {
         "series": [
           {"label": "Ours", "x": [24], "y": [0.93], "color": "blue_main"},
@@ -38,6 +49,12 @@
           {"label": "Baseline B", "x": [39], "y": [0.83], "color": "red_strong"}
         ]
       }
+    },
+    {
+      "kind": "legend",
+      "source_panel": 0,
+      "legend_loc": "center",
+      "legend_ncol": 1
     }
   ]
 }

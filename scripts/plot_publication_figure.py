@@ -69,8 +69,25 @@ def apply_publication_style(style: FigureStyle) -> None:
     )
 
 
-def create_subplots(nrows: int, ncols: int, figsize: tuple[float, float]) -> tuple[plt.Figure, np.ndarray]:
-    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize, squeeze=False)
+def create_subplots(
+    nrows: int,
+    ncols: int,
+    figsize: tuple[float, float],
+    width_ratios: list[float] | None = None,
+    height_ratios: list[float] | None = None,
+) -> tuple[plt.Figure, np.ndarray]:
+    gridspec_kw = {}
+    if width_ratios:
+        gridspec_kw["width_ratios"] = width_ratios
+    if height_ratios:
+        gridspec_kw["height_ratios"] = height_ratios
+    fig, axes = plt.subplots(
+        nrows=nrows,
+        ncols=ncols,
+        figsize=figsize,
+        squeeze=False,
+        gridspec_kw=gridspec_kw or None,
+    )
     return fig, axes.reshape(-1)
 
 
@@ -171,6 +188,27 @@ def annotate_bars(ax: plt.Axes, containers: list, fmt: str, fontsize: float, pad
             )
 
 
+def add_legend(ax: plt.Axes, panel: dict, default_loc: str = "upper center") -> None:
+    if panel.get("legend_outside"):
+        ax.legend(
+            loc=panel.get("legend_loc", default_loc),
+            bbox_to_anchor=panel.get("legend_bbox_to_anchor", [0.5, 1.18]),
+            ncol=panel.get("legend_ncol", 1),
+            borderaxespad=float(panel.get("legend_borderaxespad", 0.0)),
+        )
+        return
+    ax.legend(loc=panel.get("legend_loc", "best"), ncol=panel.get("legend_ncol", 1))
+
+
+def apply_annotation_headroom(ax: plt.Axes, panel: dict, max_value: float) -> None:
+    if not panel.get("annotate") or "ylim" in panel:
+        return
+    low, high = ax.get_ylim()
+    headroom = float(panel.get("annotate_headroom", 0.08))
+    target_high = max(high, max_value + (high - low) * headroom)
+    ax.set_ylim(low, target_high)
+
+
 def render_bar(ax: plt.Axes, panel: dict) -> None:
     categories = panel["categories"]
     series = coerce_2d(panel["series"], "series")
@@ -208,8 +246,9 @@ def render_bar(ax: plt.Axes, panel: dict) -> None:
     ax.set_xticks(x)
     ax.set_xticklabels(categories, rotation=panel.get("xtick_rotation", 0))
     if panel.get("legend", True):
-        ax.legend(loc=panel.get("legend_loc", "best"), ncol=panel.get("legend_ncol", 1))
+        add_legend(ax, panel)
     if panel.get("annotate"):
+        apply_annotation_headroom(ax, panel, float(series.max()))
         annotate_bars(
             ax,
             containers,
@@ -247,7 +286,7 @@ def render_trend(ax: plt.Axes, panel: dict) -> None:
             ax.fill_between(x, y - shadow, y + shadow, color=colors[idx], alpha=float(panel.get("shadow_alpha", 0.15)))
 
     if panel.get("legend", True):
-        ax.legend(loc=panel.get("legend_loc", "best"), ncol=panel.get("legend_ncol", 1))
+        add_legend(ax, panel)
 
 
 def render_heatmap(ax: plt.Axes, panel: dict, fig: plt.Figure) -> None:
@@ -294,7 +333,7 @@ def render_scatter(ax: plt.Axes, panel: dict) -> None:
                 linewidths=float(item.get("linewidths", panel.get("linewidths", 0.0))),
             )
         if panel.get("legend", True) and has_label:
-            ax.legend(loc=panel.get("legend_loc", "best"), ncol=panel.get("legend_ncol", 1))
+            add_legend(ax, panel)
         return
 
     x = coerce_1d(panel["x"], "x")
@@ -313,7 +352,7 @@ def render_scatter(ax: plt.Axes, panel: dict) -> None:
         linewidths=float(panel.get("linewidths", 0.0)),
     )
     if panel.get("legend") and panel.get("label"):
-        ax.legend(loc=panel.get("legend_loc", "best"))
+        add_legend(ax, panel)
 
 
 def render_legend_panel(ax: plt.Axes, panel: dict, rendered_axes: list[plt.Axes]) -> None:
@@ -381,7 +420,13 @@ def main() -> int:
     if len(figsize) != 2:
         raise SystemExit("layout.figsize must contain exactly two numbers.")
 
-    fig, axes = create_subplots(nrows, ncols, (float(figsize[0]), float(figsize[1])))
+    fig, axes = create_subplots(
+        nrows,
+        ncols,
+        (float(figsize[0]), float(figsize[1])),
+        layout.get("width_ratios"),
+        layout.get("height_ratios"),
+    )
     panels = spec.get("panels", [])
     if len(panels) > len(axes):
         raise SystemExit("Number of panels exceeds subplot slots.")

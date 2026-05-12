@@ -5,10 +5,15 @@ Save the following as a concise request JSON when you want exact plotting rather
 ```json
 {
   "suptitle": "Ablation and Efficiency Summary",
+  "style": {
+    "font_size": 12,
+    "axes_linewidth": 2.0
+  },
   "layout": {
     "nrows": 1,
-    "ncols": 2,
-    "figsize": [12, 5]
+    "ncols": 3,
+    "figsize": [14, 5],
+    "width_ratios": [1, 1, 0.32]
   },
   "panels": [
     {
@@ -17,6 +22,8 @@ Save the following as a concise request JSON when you want exact plotting rather
       "ylabel": "Score",
       "ylim": [0.7, 1.0],
       "annotate": true,
+      "annotate_fontsize": 8,
+      "legend": false,
       "data": {
         "categories": ["AUC", "F1", "Recall", "Precision"],
         "series": {
@@ -36,6 +43,10 @@ Save the following as a concise request JSON when you want exact plotting rather
       "title": "Latency vs Accuracy",
       "xlabel": "Latency (ms)",
       "ylabel": "Accuracy",
+      "xlim": [22, 41],
+      "ylim": [0.82, 0.94],
+      "xticks": [25, 30, 35, 40],
+      "legend": false,
       "data": {
         "series": [
           {
@@ -58,6 +69,12 @@ Save the following as a concise request JSON when you want exact plotting rather
           }
         ]
       }
+    },
+    {
+      "kind": "legend",
+      "source_panel": 0,
+      "legend_loc": "center",
+      "legend_ncol": 1
     }
   ]
 }
