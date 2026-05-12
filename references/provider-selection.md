@@ -16,6 +16,7 @@ Use this reference when configuring or choosing an image backend.
 | Official Google Gemini | `https://generativelanguage.googleapis.com` | `google` | not needed | optional `NANOBANANA_HIGHRES_MODEL` |
 | OpenAI Image API | `https://api.openai.com/v1` | bearer | not needed | optional `OPENAI_IMAGE_HIGHRES_MODEL` |
 | Gemini-compatible relay | provider-specific | usually bearer | usually required | provider-specific |
+| OpenAI-compatible relay | provider-specific | usually bearer | usually required | provider-specific |
 
 ## Gemini / Banana Environment
 
@@ -43,6 +44,7 @@ NANOBANANA_ALLOW_THIRD_PARTY=1
 ENGINEERING_FIGURE_IMAGE_PROVIDER=openai
 OPENAI_API_KEY_FILE=$HOME/.codex/secrets/openai_api_key.txt
 OPENAI_IMAGE_MODEL=gpt-image-1.5
+OPENAI_IMAGE_HIGHRES_MODEL=<optional-final-quality-model>
 OPENAI_IMAGE_QUALITY=auto
 OPENAI_IMAGE_SIZE=auto
 OPENAI_IMAGE_OUTPUT_FORMAT=png
@@ -51,5 +53,6 @@ OPENAI_IMAGE_OUTPUT_FORMAT=png
 ## Safety Rules
 
 - Only set `NANOBANANA_ALLOW_THIRD_PARTY=1` when the user intentionally trusts the provider.
+- Only set `OPENAI_ALLOW_THIRD_PARTY=1` when the user intentionally trusts a non-official OpenAI-compatible endpoint.
 - Verify how uploaded prompts, images, and API keys are handled before sending sensitive material.
 - If the user asks for ChatGPT/OpenAI-style generation, use `--provider openai` and `OPENAI_*` settings. Do not route OpenAI requests through Gemini relay settings.

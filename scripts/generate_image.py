@@ -21,6 +21,7 @@ GEMINI_OFFICIAL_BASE_URL = "https://generativelanguage.googleapis.com"
 GEMINI_OFFICIAL_HOSTNAME = "generativelanguage.googleapis.com"
 GEMINI_DEFAULT_MODEL = "gemini-3.1-flash-image-preview"
 OPENAI_DEFAULT_BASE_URL = "https://api.openai.com/v1"
+OPENAI_OFFICIAL_HOSTNAME = "api.openai.com"
 OPENAI_DEFAULT_MODEL = "gpt-image-1.5"
 DEFAULT_TIMEOUT = 120
 DEFAULT_AUTH_MODE = "google"
@@ -29,6 +30,11 @@ HIGHRES_HINTS = ("2k", "highres", "high-res", "high resolution", "final export",
 
 def load_figure_templates() -> dict:
     template_path = Path(__file__).resolve().parent.parent / "references" / "engineering-figure-templates.json"
+    return json.loads(template_path.read_text(encoding="utf-8"))
+
+
+def load_materials_templates() -> dict:
+    template_path = Path(__file__).resolve().parent.parent / "references" / "materials-science-figure-templates.json"
     return json.loads(template_path.read_text(encoding="utf-8"))
 
 
@@ -62,8 +68,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--materials-figure",
-        choices=tuple(load_figure_templates().keys()),
-        help="Backward-compatible alias for --figure-template.",
+        choices=tuple(load_materials_templates().keys()),
+        help="Use a built-in materials-science figure template.",
     )
     parser.add_argument(
         "--lang",
@@ -195,7 +201,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--allow-third-party",
         action="store_true",
-        help="Explicitly allow sending API keys and input files to a non-official Gemini-compatible provider.",
+        help="Explicitly allow sending API keys and input files to a non-official compatible provider.",
     )
     return parser
 
@@ -226,6 +232,18 @@ def assert_endpoint_allowed(base_url: str, args: argparse.Namespace) -> None:
         )
 
 
+def assert_openai_endpoint_allowed(base_url: str, args: argparse.Namespace) -> None:
+    hostname = urllib.parse.urlparse(base_url).hostname or ""
+    allow_third_party = args.allow_third_party or os.getenv("OPENAI_ALLOW_THIRD_PARTY") == "1"
+    if hostname != OPENAI_OFFICIAL_HOSTNAME and not allow_third_party:
+        raise SystemExit(
+            "Refusing to send API keys or user-provided files to a third-party OpenAI-compatible provider. "
+            "If you intend to use a non-official endpoint, set OPENAI_ALLOW_THIRD_PARTY=1 "
+            "or pass --allow-third-party. "
+            f"Official OpenAI endpoint: {OPENAI_DEFAULT_BASE_URL}"
+        )
+
+
 def load_input_images(image_paths: list[str]) -> list[dict]:
     return [file_to_inline_part(path_str) for path_str in image_paths]
 
@@ -244,6 +262,9 @@ def file_to_inline_part(path_str: str) -> dict:
 
 
 def resolve_prompt(args: argparse.Namespace) -> str:
+    if args.figure_template and args.materials_figure:
+        raise SystemExit("Choose only one of --figure-template or --materials-figure.")
+
     raw_prompt = args.prompt
     if args.prompt_file:
         path = Path(args.prompt_file)
@@ -251,12 +272,21 @@ def resolve_prompt(args: argparse.Namespace) -> str:
             raise SystemExit(f"Prompt file not found: {path}")
         raw_prompt = path.read_text(encoding="utf-8")
 
-    figure_template = args.figure_template or args.materials_figure
-    if figure_template:
+    if args.figure_template:
         if not raw_prompt:
             raise SystemExit("Provide technical background as the positional prompt when using --figure-template.")
         template_lang = resolve_lang(raw_prompt, args.lang)
-        template = load_figure_templates()[figure_template][template_lang]
+        template = load_figure_templates()[args.figure_template][template_lang]
+        prompt = template.format(background=raw_prompt.strip())
+        if args.style_note:
+            prompt = f"{prompt}\n\nAdditional Style Requirement:\n{args.style_note}"
+        return prompt
+
+    if args.materials_figure:
+        if not raw_prompt:
+            raise SystemExit("Provide scientific background as the positional prompt when using --materials-figure.")
+        template_lang = resolve_lang(raw_prompt, args.lang)
+        template = load_materials_templates()[args.materials_figure][template_lang]
         prompt = template.format(background=raw_prompt.strip())
         if args.style_note:
             prompt = f"{prompt}\n\nAdditional Style Requirement:\n{args.style_note}"
@@ -336,8 +366,15 @@ def resolve_openai_model(args: argparse.Namespace) -> str:
     if args.model:
         return args.model
     highres_model = os.getenv("OPENAI_IMAGE_HIGHRES_MODEL")
-    if should_use_highres_model(args) and highres_model:
-        return highres_model
+    if should_use_highres_model(args):
+        if highres_model:
+            return highres_model
+        raise SystemExit(
+            "This request clearly asks for the OpenAI high-resolution or final-quality model, "
+            "but OPENAI_IMAGE_HIGHRES_MODEL is not configured. Generation has been stopped intentionally. "
+            "Do not silently downgrade to the default model. Ask the human whether to keep retrying "
+            "high-resolution generation or explicitly allow fallback."
+        )
     return os.getenv("OPENAI_IMAGE_MODEL", OPENAI_DEFAULT_MODEL)
 
 
@@ -496,6 +533,7 @@ def openai_generation_payload(args: argparse.Namespace) -> dict:
 
 def request_openai_json(args: argparse.Namespace) -> dict:
     base_url = resolve_openai_base_url(args)
+    assert_openai_endpoint_allowed(base_url, args)
     api_key = resolve_openai_api_key(args)
     headers = {
         "Accept": "application/json",

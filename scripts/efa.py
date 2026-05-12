@@ -19,12 +19,23 @@ def run_command(args: list[str]) -> int:
 
 
 def cmd_prompt(args: argparse.Namespace) -> int:
-    command = [
-        sys.executable,
-        str(SCRIPTS / "build_engineering_figure_prompt.py"),
-        "--figure-template",
-        args.figure_template,
-    ]
+    if bool(args.figure_template) == bool(args.materials_figure):
+        print("Choose exactly one of --figure-template or --materials-figure.", file=sys.stderr)
+        return 2
+    if args.materials_figure:
+        command = [
+            sys.executable,
+            str(SCRIPTS / "build_materials_figure_prompt.py"),
+            "--materials-figure",
+            args.materials_figure,
+        ]
+    else:
+        command = [
+            sys.executable,
+            str(SCRIPTS / "build_engineering_figure_prompt.py"),
+            "--figure-template",
+            args.figure_template,
+        ]
     if args.lang:
         command.extend(["--lang", args.lang])
     if args.style_note:
@@ -104,7 +115,8 @@ def build_parser() -> argparse.ArgumentParser:
     prompt = sub.add_parser("prompt", help="Build an engineering figure prompt without network calls.")
     prompt.add_argument("background", nargs="?", help="Technical background text.")
     prompt.add_argument("--background-file", help="Read technical background from a file.")
-    prompt.add_argument("--figure-template", required=True)
+    prompt.add_argument("--figure-template")
+    prompt.add_argument("--materials-figure")
     prompt.add_argument("--lang", choices=("en", "zh"))
     prompt.add_argument("--style-note")
     prompt.set_defaults(func=cmd_prompt)

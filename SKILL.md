@@ -22,7 +22,7 @@ Not the main tool for:
 - Auditing whether a figure supports the paper argument.
 - Writing full reviewer-style figure critique.
 
-If the user is still deciding the figure claim, panel logic, or caption argument, use `ai-research-writing-guide` upstream first.
+If the user is still deciding the figure claim, panel logic, or caption argument, use an available research-writing or paper-analysis skill upstream first.
 
 ## Core Decision
 
@@ -37,7 +37,7 @@ Never use image generation for exact values, axes, or benchmark geometry.
 1. Inspect the user input and decide whether a figure brief is already present.
 2. If needed, create a brief using `docs/figure-brief-spec.md`.
 3. Choose `image`, `plot`, or `mixed` mode.
-4. For conceptual figures, choose a template from `references/engineering-figure-templates.md` or `references/materials-science-figure-template.md`.
+4. For conceptual figures, prefer the prompt-builder scripts; read template references only when you need to inspect or customize template wording.
 5. For exact plots, create a concise plot request and render it locally.
 6. Keep labels short, claims source-grounded, and outputs publication-oriented.
 7. Save prompt/spec/output paths when files are produced.
@@ -47,8 +47,8 @@ Never use image generation for exact values, axes, or benchmark geometry.
 
 Read only what is needed:
 
-- `references/engineering-figure-templates.md`: CS, electronics, algorithms, and engineering templates.
-- `references/materials-science-figure-template.md`: materials-science figure templates.
+- `references/engineering-figure-templates.md`: CS, electronics, algorithms, and engineering templates; read only when script output needs customization.
+- `references/materials-science-figure-template.md`: materials-science figure templates; read only when script output needs customization.
 - `references/publication-figure-design.md`: publication styling rules.
 - `references/publication-chart-patterns.md`: plot and panel composition patterns.
 - `references/natural-language-plot-workflow.md`: natural language to exact plot requests.
@@ -64,12 +64,14 @@ Read only what is needed:
 
 ```bash
 python scripts/build_engineering_figure_prompt.py --figure-template system-architecture --lang en "technical background"
+python scripts/build_materials_figure_prompt.py --materials-figure mechanism-figure --lang en "scientific background"
 ```
 
 - Generate or edit a conceptual image:
 
 ```bash
 python scripts/generate_image.py --provider openai --figure-template system-architecture --lang en "technical background"
+python scripts/generate_image.py --provider openai --materials-figure mechanism-figure --lang en "scientific background"
 ```
 
 - Render an exact plot:
@@ -83,6 +85,7 @@ python scripts/plot_publication_figure.py spec.json --out-path output/figure --f
 
 ```bash
 python scripts/efa.py prompt --figure-template system-architecture "technical background"
+python scripts/efa.py prompt --materials-figure mechanism-figure "scientific background"
 python scripts/efa.py plot request.json --out-path output/figure
 python scripts/efa.py check
 ```
