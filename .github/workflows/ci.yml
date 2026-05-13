@@ -13,13 +13,17 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: python -m pip install -r requirements.txt
+        run: python -m pip install -r requirements.txt tiktoken
       - name: Compile scripts
         run: python -m compileall scripts
-      - name: Run tests
-        run: pytest -q
       - name: Validate skill package
         run: python scripts/validate_skill.py .
+      - name: Validate text encoding
+        run: python scripts/validate_text_encoding.py SKILL.md README.md README.en.md README.zh-CN.md agents references scripts tests assets templates schemas
+      - name: Run tests
+        run: python -m pytest -q
+      - name: Validate runtime package and token budget
+        run: python scripts/check_runtime_package.py --token-budget 43000
       - name: README and docs smoke checks
         run: |
           python scripts/efa.py check
