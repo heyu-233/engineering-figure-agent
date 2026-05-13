@@ -22,6 +22,18 @@ ALLOW = [
     "secrets",
     "LICENSE",
 ]
+RUNTIME_SCRIPT_ALLOW = {
+    "build_engineering_figure_prompt.py",
+    "build_materials_figure_prompt.py",
+    "build_plot_spec.py",
+    "check_setup.ps1",
+    "efa.py",
+    "generate_image.js",
+    "generate_image.py",
+    "load_nanobanana_env.ps1",
+    "plot_publication_figure.py",
+    "wizard.ps1",
+}
 
 
 def safe_target(path: Path) -> Path:
@@ -45,6 +57,12 @@ def remove_contents(path: Path) -> None:
 
 def copy_item(source: Path, target: Path) -> None:
     if not source.exists():
+        return
+    if source.is_dir() and source.name == "scripts":
+        target.mkdir(parents=True, exist_ok=True)
+        for child in source.iterdir():
+            if child.name in RUNTIME_SCRIPT_ALLOW:
+                copy_item(child, target / child.name)
         return
     if source.is_dir():
         ignore = shutil.ignore_patterns("__pycache__", "*.pyc", ".pytest_cache")
