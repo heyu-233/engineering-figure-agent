@@ -20,6 +20,8 @@ jobs:
         run: python scripts/validate_skill.py .
       - name: Validate text encoding
         run: python scripts/validate_text_encoding.py SKILL.md README.md README.en.md README.zh-CN.md agents references scripts tests assets templates schemas
+      - name: Validate Chinese prompt templates
+        run: python scripts/validate_prompt_templates.py .
       - name: Run tests
         run: python -m pytest -q
       - name: Validate runtime package and token budget
