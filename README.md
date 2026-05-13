@@ -146,7 +146,7 @@ Recommended upstream handoff:
 
 Core platform-neutral contracts:
 
-- [Figure brief spec](./docs/figure-brief-spec.md)
+- [Figure brief spec](./references/figure-brief-spec.md)
 - [Plot request schema](./schemas/plot-request.schema.json)
 - [Figure brief schema](./schemas/figure-brief.schema.json)
 

@@ -29,12 +29,12 @@ HIGHRES_HINTS = ("2k", "highres", "high-res", "high resolution", "final export",
 
 
 def load_figure_templates() -> dict:
-    template_path = Path(__file__).resolve().parent.parent / "references" / "engineering-figure-templates.json"
+    template_path = Path(__file__).resolve().parent.parent / "assets" / "prompt-templates" / "engineering-figure-templates.json"
     return json.loads(template_path.read_text(encoding="utf-8"))
 
 
 def load_materials_templates() -> dict:
-    template_path = Path(__file__).resolve().parent.parent / "references" / "materials-science-figure-templates.json"
+    template_path = Path(__file__).resolve().parent.parent / "assets" / "prompt-templates" / "materials-science-figure-templates.json"
     return json.loads(template_path.read_text(encoding="utf-8"))
 
 

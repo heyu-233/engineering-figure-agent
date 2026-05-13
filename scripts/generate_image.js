@@ -34,7 +34,7 @@ function isExplicitHighresRequest(args) {
 }
 
 function loadMaterialsFigureTemplates() {
-  const templatePath = path.join(__dirname, "..", "references", "materials-science-figure-templates.json");
+  const templatePath = path.join(__dirname, "..", "assets", "prompt-templates", "materials-science-figure-templates.json");
   return JSON.parse(fs.readFileSync(templatePath, "utf8"));
 }
 

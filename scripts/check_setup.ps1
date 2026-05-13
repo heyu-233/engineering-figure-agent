@@ -56,7 +56,7 @@ $requiredFiles = @(
     "agents/openai.yaml",
     "scripts/generate_image.py",
     "scripts/load_nanobanana_env.ps1",
-    "references/engineering-figure-templates.json"
+    "assets/prompt-templates/engineering-figure-templates.json"
 )
 
 foreach ($rel in $requiredFiles) {

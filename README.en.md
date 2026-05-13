@@ -77,7 +77,7 @@ python "$HOME/.codex/skills/engineering-figure-agent/scripts/efa.py" plot `
 
 Core contracts:
 
-- `docs/figure-brief-spec.md`
+- `references/figure-brief-spec.md`
 - `schemas/figure-brief.schema.json`
 - `schemas/plot-request.schema.json`
 

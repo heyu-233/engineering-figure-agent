@@ -8,7 +8,7 @@ Adapters keep platform-specific instructions outside the core Codex skill.
 
 The core contracts remain platform-neutral:
 
-- `../docs/figure-brief-spec.md`
+- `../references/figure-brief-spec.md`
 - `../schemas/figure-brief.schema.json`
 - `../schemas/plot-request.schema.json`
 - `../docs/prompt-pack.md`

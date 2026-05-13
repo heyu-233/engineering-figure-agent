@@ -19,7 +19,7 @@ TEMPLATE_CHOICES = (
 
 
 def load_templates() -> dict:
-    template_path = Path(__file__).resolve().parent.parent / "references" / "engineering-figure-templates.json"
+    template_path = Path(__file__).resolve().parent.parent / "assets" / "prompt-templates" / "engineering-figure-templates.json"
     return json.loads(template_path.read_text(encoding="utf-8"))
 
 

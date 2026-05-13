@@ -1,26 +1,24 @@
 ---
 name: engineering-figure-agent
-description: Use when the user needs computer science, electronics, algorithms, or general engineering paper figures with Gemini, Nano Banana, OpenAI image models, or exact publication-style plots rendered from numeric data. Prefer this skill for system architecture figures, algorithm workflows, pipeline diagrams, hardware block diagrams, circuit-level schematics, benchmark charts, ablation plots, scatter or heatmap panels, figure briefs, figure redrawing, image editing, and provider-neutral figure workflows.
+description: Use when the user needs engineering or research-paper figures: system architecture diagrams, algorithm workflows, hardware schematics, benchmark charts, ablation plots, figure briefs, redraws, image edits, or exact publication-style plots from numeric data. Covers Gemini, Nano Banana, OpenAI image models, and local plotting workflows.
 ---
 
 # Engineering Figure Agent
 
-Use this skill for the figure-production layer after the figure goal is reasonably clear.
+Use this skill after the figure goal is already reasonably clear.
 
 ## Boundary
 
 Good fit:
 
-- Turn a figure brief into a conceptual diagram, engineering schematic, workflow figure, or exact publication plot.
+- Turn a figure brief into a conceptual diagram, workflow figure, schematic, or exact publication plot.
 - Choose between `image`, `plot`, and `mixed` mode.
-- Build prompts, render exact plots, and apply publication-style constraints.
-- Refine existing prompts or figure briefs.
+- Build prompts, render plots, and refine existing briefs.
 
 Not the main tool for:
 
-- Deciding from scratch what claim a paper should visualize.
-- Auditing whether a figure supports the paper argument.
-- Writing full reviewer-style figure critique.
+- Deciding from scratch what claim the paper should visualize.
+- Full paper-argument or reviewer-style critique.
 
 If the user is still deciding the figure claim, panel logic, or caption argument, use an available research-writing or paper-analysis skill upstream first.
 
@@ -35,7 +33,7 @@ Never use image generation for exact values, axes, or benchmark geometry.
 ## Default Workflow
 
 1. Inspect the user input and decide whether a figure brief is already present.
-2. If needed, create a brief using `docs/figure-brief-spec.md`.
+2. If needed, create a brief using `references/figure-brief-spec.md`.
 3. Choose `image`, `plot`, or `mixed` mode.
 4. For conceptual figures, prefer the prompt-builder scripts; read template references only when you need to inspect or customize template wording.
 5. For exact plots, create a concise plot request and render it locally.
@@ -47,15 +45,13 @@ Never use image generation for exact values, axes, or benchmark geometry.
 
 Read only what is needed:
 
-- `references/engineering-figure-templates.md`: CS, electronics, algorithms, and engineering templates; read only when script output needs customization.
-- `references/materials-science-figure-template.md`: materials-science figure templates; read only when script output needs customization.
-- `references/publication-figure-design.md`: publication styling rules.
-- `references/publication-chart-patterns.md`: plot and panel composition patterns.
-- `references/natural-language-plot-workflow.md`: natural language to exact plot requests.
-- `references/publication-plot-api.md`: full exact-plot spec.
-- `references/provider-selection.md`: Gemini/Banana/OpenAI provider configuration.
-- `references/highres-policy.md`: high-resolution and no-silent-downgrade rules.
+- `references/figure-brief-spec.md`: brief structure and mode rules.
+- `references/publication-figure-design.md`: publication styling defaults.
+- `references/provider-selection.md`: Gemini/Banana/OpenAI setup.
+- `references/highres-policy.md`: high-resolution and fail-closed rules.
 - `references/chinese-labels.md`: Chinese label readability rules.
+- `references/engineering-figure-templates.md` and `references/materials-science-figure-template.md`: template wording when script output needs customization.
+- `references/publication-chart-patterns.md`, `references/natural-language-plot-workflow.md`, and `references/publication-plot-api.md`: exact or plot-heavy workflows.
 - `references/editable-figure-handoff.md`: optional editable SVG handoff.
 
 ## Scripts
