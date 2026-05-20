@@ -8,6 +8,8 @@
 ![Backends](https://img.shields.io/badge/backends-Gemini%20%7C%20OpenAI%20%7C%20local%20plots-16a34a)
 ![Focus](https://img.shields.io/badge/focus-engineering%20papers-7c3aed)
 
+[![Try Engineering Figure Agent on Socialistic](https://socialistic.ai/api/embed/engineering-figure-agent-407b80)](https://socialistic.ai/zh/skill/engineering-figure-agent-407b80?utm_source=github&utm_medium=readme&utm_campaign=20260519-student-research-tools&utm_content=badge)
+
 **Agent-native figure production for engineering and CS papers.**
 
 把工程论文里的系统架构图、算法流程图、实验曲线和多面板图，拆成可控的生成流程：概念图走 image mode，精确数值图走 plot mode。
